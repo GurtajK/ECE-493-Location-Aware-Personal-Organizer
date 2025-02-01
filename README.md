@@ -1,1 +1,1 @@
-# ECE-493-Location-Based-Personal-Organizer
+# ECE-493-Location-Aware-Personal-Organizer
