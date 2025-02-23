@@ -1,8 +1,10 @@
 package com.example.location_aware_personal_organizer
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,17 +24,27 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.location_aware_personal_organizer.services.Authorization
+import com.example.location_aware_personal_organizer.ui.theme.AppTheme
 
 class ComposeActivity : ComponentActivity() {
+    private fun onLogin() {
+        startActivity(Intent(this, MainActivity::class.java))
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
+        Authorization.getInstance();
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge();
         setContent {
             // A surface container using the 'background' color from the theme
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.background
-            ) {
-                MessageCard("Android", "test composable");
+            AppTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    RegisterLogin(onAuthentication={onLogin()})
+                    //MessageCard("Android", "test composable");
+                }
             }
         }
     }
