@@ -23,11 +23,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.location_aware_personal_organizer.components.PasswordInput
+import com.example.location_aware_personal_organizer.services.Authorization
 import com.example.location_aware_personal_organizer.ui.theme.AppTypography
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun rRegister() {
+fun Register(redirectLogin: () -> Unit) {
     var username by rememberSaveable { mutableStateOf("") };
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") };
@@ -73,7 +74,7 @@ fun rRegister() {
                 FlowRow(
                     modifier = Modifier.fillMaxColumnWidth(),
                 ) {
-                    Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
+                    Button(onClick = {Authorization.register(username, email, password, confirmPassword, redirectLogin)}, modifier = Modifier.fillMaxWidth()) {
                         Text("Register");
                     }
                 }
@@ -81,7 +82,7 @@ fun rRegister() {
                     modifier = Modifier.fillMaxColumnWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    TextButton(onClick = {}) {
+                    TextButton(onClick = {redirectLogin()}) {
                         Text("Already have an account? Login");
                     }
                 }
@@ -92,5 +93,5 @@ fun rRegister() {
 @Preview(showBackground = true)
 @Composable
 fun RegisterPreview() {
-    rRegister();
+    Register {};
 }

@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".deprecatedMainActivity"
             android:exported="true"
             >
             <intent-filter>

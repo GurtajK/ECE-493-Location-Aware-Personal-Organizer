@@ -1,6 +1,5 @@
 package com.example.location_aware_personal_organizer
 
-import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -10,7 +9,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.location_aware_personal_organizer.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class deprecatedMainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 

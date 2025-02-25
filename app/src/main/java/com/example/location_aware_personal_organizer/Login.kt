@@ -23,11 +23,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.location_aware_personal_organizer.components.PasswordInput
+import com.example.location_aware_personal_organizer.services.Authorization
 import com.example.location_aware_personal_organizer.ui.theme.AppTypography
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun Login() {
+fun Login(onLogin: () -> Unit, signupRedirect: () -> Unit) {
     var username by rememberSaveable { mutableStateOf("") };
     var password by rememberSaveable { mutableStateOf("") };
 
@@ -69,7 +70,7 @@ fun Login() {
                 FlowRow(
                     modifier = Modifier.fillMaxColumnWidth(),
                 ) {
-                    Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
+                    Button(onClick = { Authorization.login(username, password, onLogin) }, modifier = Modifier.fillMaxWidth()) {
                         Text("Login");
                     }
                 }
@@ -77,8 +78,8 @@ fun Login() {
                     modifier = Modifier.fillMaxColumnWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    TextButton(onClick = {}) {
-                        Text("Don't have an account? Register Now");
+                    TextButton(onClick = {signupRedirect()}) {
+                        Text("Don't have an account? Sign Up");
                     }
                 }
         }
@@ -88,5 +89,5 @@ fun Login() {
 @Preview(showBackground = true)
 @Composable
 fun LoginPreview() {
-    Login();
+    Login({}, {});
 }
