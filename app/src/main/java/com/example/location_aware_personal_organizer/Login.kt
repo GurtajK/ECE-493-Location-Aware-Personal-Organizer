@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,16 +35,23 @@ fun Login(onLogin: () -> Unit, signupRedirect: () -> Unit) {
     var username by rememberSaveable { mutableStateOf("") };
     var password by rememberSaveable { mutableStateOf("") };
 
+    val context = LocalContext.current
     Surface(
-        modifier = Modifier.fillMaxSize().padding(all = 8.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(all = 8.dp)
     ) {
         FlowColumn(
-            modifier = Modifier.fillMaxHeight().padding(all = 8.dp),
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(all = 8.dp),
             verticalArrangement = Arrangement.Center,
             horizontalArrangement = Arrangement.Center
         ) {
                 FlowRow(
-                    modifier = Modifier.fillMaxColumnWidth().padding(bottom = 40.dp),
+                    modifier = Modifier
+                        .fillMaxColumnWidth()
+                        .padding(bottom = 40.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
@@ -73,7 +81,7 @@ fun Login(onLogin: () -> Unit, signupRedirect: () -> Unit) {
                 FlowRow(
                     modifier = Modifier.fillMaxColumnWidth(),
                 ) {
-                    Button(onClick = { Authorization.login(username, password, onLogin) }, modifier = Modifier.fillMaxWidth()) {
+                    Button(onClick = { Authorization.login(username, password, onLogin, context) }, modifier = Modifier.fillMaxWidth()) {
                         Text(stringResource(R.string.login))
                     }
                 }
