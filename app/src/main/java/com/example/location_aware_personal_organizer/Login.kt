@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.location_aware_personal_organizer.components.PasswordInput
@@ -45,33 +47,34 @@ fun Login(onLogin: () -> Unit, signupRedirect: () -> Unit) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        "Location-Aware\r\nPersonal Organizer",
+                        stringResource(R.string.app_name),
                         textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth(0.7f),
                         style = AppTypography.titleLarge)
                 }
                 FlowRow(modifier = Modifier.padding(bottom = 10.dp)) {
                     TextField(
                         username,
                         onValueChange = { username = it },
-                        label = { Text("Username") }
+                        label = { Text(stringResource(R.string.username)) }
                     )
                 }
-                FlowRow {
+                FlowRow(modifier = Modifier.absolutePadding(bottom = 0.dp)) {
                     PasswordInput(password, onPasswordChange = { password = it })
                 }
                 FlowRow(
                     modifier = Modifier.fillMaxColumnWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    TextButton(onClick = {}) {
-                        Text("Forgot Password?", modifier = Modifier.padding(vertical = 0.dp));
+                    TextButton(onClick = {}, modifier = Modifier.padding(vertical = 0.dp)) {
+                        Text(stringResource(R.string.forgot_password), modifier = Modifier.padding(vertical = 0.dp));
                     }
                 }
                 FlowRow(
                     modifier = Modifier.fillMaxColumnWidth(),
                 ) {
                     Button(onClick = { Authorization.login(username, password, onLogin) }, modifier = Modifier.fillMaxWidth()) {
-                        Text("Login");
+                        Text(stringResource(R.string.login))
                     }
                 }
                 FlowRow(
@@ -79,7 +82,7 @@ fun Login(onLogin: () -> Unit, signupRedirect: () -> Unit) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     TextButton(onClick = {signupRedirect()}) {
-                        Text("Don't have an account? Sign Up");
+                        Text(stringResource(R.string.no_account));
                     }
                 }
         }
