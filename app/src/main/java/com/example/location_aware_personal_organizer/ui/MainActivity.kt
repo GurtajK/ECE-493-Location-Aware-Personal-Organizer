@@ -32,25 +32,20 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController: NavHostController = rememberNavController()
-                    Log.d("MainActivity", "NavController in MainActivity: $navController") // Add this line
                     NavHost(
                         navController = navController,
                         startDestination = Screen.Login.route
                     ) {
                         composable(Screen.Login.route) {
-                            Log.d("MainActivity", "Navigating to LoginScreen")
                             LoginScreen(navController)
                         }
                         composable(Screen.Register.route) {
-                            Log.d("MainActivity", "Navigating to RegisterScreen")
                             RegisterScreen(navController)
                         }
                         composable(Screen.Dashboard.route) {
-                            Log.d("MainActivity", "Navigating to DashboardScreen")
                             DashboardScreen(navController)
                         }
                         composable(Screen.TaskCreation.route) {
-                            Log.d("MainActivity", "Navigating to TaskCreationScreen") // Add this line
                             TaskCreationScreen(navController)
                         }
                     }

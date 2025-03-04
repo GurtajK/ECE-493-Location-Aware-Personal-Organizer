@@ -71,8 +71,6 @@ fun DashboardScreen(navController: NavController) {
 fun CreateNewTaskButton(navController: NavController, modifier: Modifier = Modifier) {
     Button(
         onClick = {
-            Log.d("DashboardScreen", "Create New Task button clicked")
-            Log.d("DashboardScreen", "Navigating to: ${Screen.TaskCreation.route}")
             navController.navigate(Screen.TaskCreation.route)
         },
         modifier = modifier

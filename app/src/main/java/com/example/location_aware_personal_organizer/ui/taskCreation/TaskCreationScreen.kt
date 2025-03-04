@@ -22,7 +22,7 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskCreationScreen(navController: NavController) {
-    Log.d("TaskCreationScreen", "Composing TaskCreationScreen")
+
     var taskName by remember { mutableStateOf("") }
     var taskDescription by remember { mutableStateOf("") }
 
