@@ -3,7 +3,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-
+    <string name="create_new_task">Create New Task</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
@@ -23,5 +23,6 @@
     <string name="generic_error">Something went wrong. Please try again.</string>
     <string name="invalid_fields">Some fields have invalid values.\nPlease try again</string>
     <string name="invalid_credentials">Username or password is incorrect</string>
+    <string name="welcome_dashboard">Welcome to your Task Dashboard!</string>
 
 </resources>
