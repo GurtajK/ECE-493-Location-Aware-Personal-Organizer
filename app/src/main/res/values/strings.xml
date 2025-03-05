@@ -24,5 +24,18 @@
     <string name="invalid_fields">Some fields have invalid values.\nPlease try again</string>
     <string name="invalid_credentials">Username or password is incorrect</string>
     <string name="welcome_dashboard">Welcome to your Task Dashboard!</string>
+    <string name="task_name_required">Task Name is required</string>
+    <string name="minutes">minutes</string>
+    <string name="select_date_time">Please select a date and time</string>
+    <string name="task_deadline_required">Task Deadline is required</string>
+    <string name="create_task">Create Task</string>
+    <string name="task_name">Task Name</string>
+    <string name="task_description">Task Description</string>
+    <string name="task_created_successfully">Task Created Successfully</string>
+    <string name="task_creation_failed">Task Creation Failed</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <string name="task_deadline">Task Deadline</string>
+    <string name="time_to_notify">Time to Notify</string>
 
 </resources>
