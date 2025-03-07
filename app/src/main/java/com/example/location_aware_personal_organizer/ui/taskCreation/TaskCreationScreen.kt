@@ -48,12 +48,14 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 import androidx.compose.runtime.rememberCoroutineScope
+import com.example.location_aware_personal_organizer.services.RequestLocationPermission
 import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskCreationScreen(navController: NavController) {
+    RequestLocationPermission()
     Log.d("TaskCreationScreen", "Composing TaskCreationScreen")
 
     var taskName by remember { mutableStateOf("") }
