@@ -37,5 +37,6 @@
     <string name="ok">Ok</string>
     <string name="task_deadline">Task Deadline</string>
     <string name="time_to_notify">Time to Notify</string>
+    <string name="not_logged_in">\"User must be logged in to create a task!\"</string>
 
 </resources>

@@ -39,6 +39,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.location_aware_personal_organizer.R
+import com.example.location_aware_personal_organizer.services.RequestLocationPermission
+import com.example.location_aware_personal_organizer.services.TaskService
 import com.example.location_aware_personal_organizer.utils.fetchLocationSuggestions
 import com.google.android.libraries.places.api.Places
 import kotlinx.coroutines.launch
@@ -47,10 +49,6 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
-import androidx.compose.runtime.rememberCoroutineScope
-import com.example.location_aware_personal_organizer.services.RequestLocationPermission
-import kotlinx.coroutines.launch
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -235,13 +233,27 @@ fun TaskCreationScreen(navController: NavController) {
                         isTaskDeadlineError = true
                     }
                     if (taskName.isNotBlank() && taskDeadline != null && taskLocation.isNotBlank()) {
-                        // Handle task creation logic here
-                        // For now, just navigate back
-                        // TODO: Store in database
                         scope.launch {
-                            snackbarHostState.showSnackbar( " Task Created Successfully")
+                            TaskService.createTask(
+                                title = taskName,
+                                description = taskDescription,
+                                deadline = taskDeadline!!,
+                                location = taskLocation,
+                                notify = timeToNotify,
+                                context = context,
+                                onSuccess = {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Task Created Successfully")
+                                        navController.popBackStack()
+                                    }
+                                },
+                                onFailure = { e ->
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Task Creation Failed: ${e.message}")
+                                    }
+                                }
+                            )
                         }
-                        navController.popBackStack()
                     } else {
                         scope.launch {
                             snackbarHostState.showSnackbar( " Task Creation Failed")

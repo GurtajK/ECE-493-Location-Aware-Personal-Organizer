@@ -81,7 +81,7 @@ dependencies {
     implementation(libs.firebase.firestore)
 
     // Google Play Services
-    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation(libs.play.services.location)
     // Google Places API
     implementation(libs.places)
 }
