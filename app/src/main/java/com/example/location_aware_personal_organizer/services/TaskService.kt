@@ -59,4 +59,20 @@ object TaskService {
             onFailure(e)
         }
     }
+
+    suspend fun getTasks(): List<Task> {
+//        val user = auth.currentUser ?: return emptyList() // Ensure user is logged in
+
+        return try {
+            val snapshot = db.collection("tasks")
+//                .whereEqualTo("user", "/users/${user.uid}") // Only fetch tasks for the logged-in user
+                .get()
+                .await()
+
+            snapshot.documents.mapNotNull { it.toObject(Task::class.java) } // Convert Firestore documents to Task objects
+        } catch (e: Exception) {
+            Log.e("TaskService", "Error fetching tasks", e)
+            emptyList()
+        }
+    }
 }
