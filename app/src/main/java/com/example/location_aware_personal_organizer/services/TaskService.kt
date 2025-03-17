@@ -60,16 +60,27 @@ object TaskService {
         }
     }
 
-    suspend fun getTasks(): List<Task> {
-//        val user = auth.currentUser ?: return emptyList() // Ensure user is logged in
+    // Fetch tasks for the logged-in user
+    suspend fun getTasksForCurrentUser(): List<Task> {
+        val user = auth.currentUser
+        if (user == null) {
+            Log.d("TaskService", "No logged-in user.")
+            return emptyList()
+        }
+
+        val username = user.displayName
+        if (username.isNullOrBlank()) {
+            Log.d("TaskService", "User has no displayName set in Firebase Auth.")
+            return emptyList()
+        }
 
         return try {
             val snapshot = db.collection("tasks")
-//                .whereEqualTo("user", "/users/${user.uid}") // Only fetch tasks for the logged-in user
+                .whereEqualTo("user", username) // filter by username
                 .get()
                 .await()
 
-            snapshot.documents.mapNotNull { it.toObject(Task::class.java) } // Convert Firestore documents to Task objects
+            snapshot.documents.mapNotNull { it.toObject(Task::class.java) }
         } catch (e: Exception) {
             Log.e("TaskService", "Error fetching tasks", e)
             emptyList()

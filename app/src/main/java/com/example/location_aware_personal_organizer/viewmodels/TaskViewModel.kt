@@ -14,7 +14,7 @@ class TaskViewModel : ViewModel() {
 
     fun fetchTasks() {
         viewModelScope.launch {
-            _tasks.value = TaskService.getTasks() // Fetch tasks from Firestore
+            _tasks.value = TaskService.getTasksForCurrentUser() // Fetch tasks from Firestore
         }
     }
 }
