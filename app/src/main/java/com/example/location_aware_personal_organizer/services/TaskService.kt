@@ -33,13 +33,20 @@ object TaskService {
             return
         }
 
+        val username = user.displayName
+        if (username.isNullOrBlank()) {
+            Toast.makeText(context, R.string.no_username, Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val task = Task(
             title = title,
             description = description,
             deadline = com.google.firebase.Timestamp(deadline),
             location = location,
             notify = notify,
-            complete = false
+            complete = false,
+            user = username
         )
 
         try {

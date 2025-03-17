@@ -10,5 +10,6 @@ data class Task(
     val deadline: Timestamp? = null,
     val location: String = "",
     val notify: Int = 0,
-    val complete: Boolean = false // Default to false
+    val complete: Boolean = false,
+    val user: String = ""
 )
