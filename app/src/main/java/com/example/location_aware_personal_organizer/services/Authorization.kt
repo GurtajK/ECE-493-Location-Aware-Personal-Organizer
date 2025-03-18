@@ -7,6 +7,7 @@ import com.example.location_aware_personal_organizer.R
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 
@@ -51,6 +52,23 @@ class Authorization private constructor() {
                             auth.createUserWithEmailAndPassword(email, password)
                                 .addOnCompleteListener { task ->
                                     if (task.isSuccessful && auth.currentUser != null) {
+
+                                        val firebaseUser = auth.currentUser
+
+                                        // Set the displayName for the user
+                                        val profileUpdates = userProfileChangeRequest {
+                                            displayName = username
+                                        }
+                                        firebaseUser?.updateProfile(profileUpdates)
+                                            ?.addOnCompleteListener { profileTask ->
+                                                if (profileTask.isSuccessful) {
+                                                    Log.d("Register", "DisplayName set to: $username")
+                                                } else {
+                                                    Log.e("Register", "Failed to set displayName", profileTask.exception)
+                                                }
+                                            }
+
+                                        // Store the user in Firestore
                                         val userdata = hashMapOf("email" to email);
                                         db.collection("users")
                                             .document(username)
