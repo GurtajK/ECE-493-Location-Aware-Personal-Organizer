@@ -93,4 +93,17 @@ object TaskService {
             emptyList()
         }
     }
+
+    suspend fun deleteTask(taskId: String) {
+        try {
+            FirebaseFirestore.getInstance()
+                .collection("tasks")
+                .document(taskId)
+                .delete()
+                .await()
+            Log.d("TaskService", "Task deleted successfully: $taskId")
+        } catch (e: Exception) {
+            Log.e("TaskService", "Error deleting task", e)
+        }
+    }
 }

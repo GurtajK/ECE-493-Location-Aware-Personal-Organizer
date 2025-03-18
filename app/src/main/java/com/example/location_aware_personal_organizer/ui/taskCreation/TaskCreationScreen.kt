@@ -169,7 +169,7 @@ fun TaskCreationScreen(navController: NavController) {
                 isError = isLocationError,
                 supportingText = {
                     if (isLocationError) {
-                        Text("Location is required.")
+                        Text(text = stringResource(R.string.task_location_required))
                     }
                 }
             )
@@ -231,6 +231,9 @@ fun TaskCreationScreen(navController: NavController) {
                     }
                     if (taskDeadline == null) {
                         isTaskDeadlineError = true
+                    }
+                    if(taskLocation.isBlank()){
+                        isLocationError = true
                     }
                     if (taskName.isNotBlank() && taskDeadline != null && taskLocation.isNotBlank()) {
                         scope.launch {
