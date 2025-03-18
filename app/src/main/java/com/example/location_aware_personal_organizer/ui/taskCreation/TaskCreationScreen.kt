@@ -60,8 +60,8 @@ fun TaskCreationScreen(navController: NavController) {
     var taskDeadline by remember { mutableStateOf<Date?>(null) }
     var timeToNotify by remember { mutableStateOf(15) } // Default to 15 minutes
     var taskDescription by remember { mutableStateOf("") }
-    var isTaskNameError by remember { mutableStateOf(false) }
-    var isTaskDeadlineError by remember { mutableStateOf(false) }
+    var isTaskNameError by remember { mutableStateOf(true) }
+    var isTaskDeadlineError by remember { mutableStateOf(true) }
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -77,7 +77,7 @@ fun TaskCreationScreen(navController: NavController) {
     val context = LocalContext.current
     val placesClient = remember(context) { Places.createClient(context) }
     var locationSuggestions by remember { mutableStateOf<List<String>>(emptyList()) }
-    var isLocationError by remember { mutableStateOf(false) }
+    var isLocationError by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
 
     if (isPressed) {
@@ -227,16 +227,6 @@ fun TaskCreationScreen(navController: NavController) {
             // Create Task and Cancel Buttons
             Button(
                 onClick = {
-                    if (taskName.isBlank()) {
-                        isTaskNameError = true
-                    }
-                    if (taskDeadline == null) {
-                        isTaskDeadlineError = true
-                    }
-
-                    if (taskLocation.isBlank()) {
-                        isLocationError = true
-                    }
 
                     if (taskName.isNotBlank() && taskDeadline != null && taskLocation.isNotBlank()) {
                         scope.launch {
