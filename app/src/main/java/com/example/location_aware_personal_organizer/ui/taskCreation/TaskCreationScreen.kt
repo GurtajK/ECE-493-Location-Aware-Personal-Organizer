@@ -60,8 +60,8 @@ fun TaskCreationScreen(navController: NavController) {
     var taskDeadline by remember { mutableStateOf<Date?>(null) }
     var timeToNotify by remember { mutableStateOf(15) } // Default to 15 minutes
     var taskDescription by remember { mutableStateOf("") }
-    var isTaskNameError by remember { mutableStateOf(false) }
-    var isTaskDeadlineError by remember { mutableStateOf(false) }
+    var isTaskNameError by remember { mutableStateOf(true) }
+    var isTaskDeadlineError by remember { mutableStateOf(true) }
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -77,7 +77,7 @@ fun TaskCreationScreen(navController: NavController) {
     val context = LocalContext.current
     val placesClient = remember(context) { Places.createClient(context) }
     var locationSuggestions by remember { mutableStateOf<List<String>>(emptyList()) }
-    var isLocationError by remember { mutableStateOf(false) }
+    var isLocationError by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
 
     if (isPressed) {
@@ -101,7 +101,7 @@ fun TaskCreationScreen(navController: NavController) {
                 value = taskName,
                 onValueChange = {
                     taskName = it
-                    isTaskNameError = false
+                    isTaskNameError = taskName.isBlank()
                 },
                 label = { Text(stringResource(R.string.task_name)) },
                 modifier = Modifier
@@ -130,7 +130,7 @@ fun TaskCreationScreen(navController: NavController) {
                 value = taskDeadline?.let {
                     SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(it)
                 } ?: stringResource(R.string.select_date_time),
-                onValueChange = {},
+                onValueChange = { },
                 readOnly = true,
                 label = { Text(stringResource(R.string.task_deadline)) },
                 modifier = Modifier
@@ -151,11 +151,12 @@ fun TaskCreationScreen(navController: NavController) {
                 interactionSource = interactionSource
             )
 
+            // Location Field
             OutlinedTextField(
                 value = taskLocation,
                 onValueChange = { newText ->
                     taskLocation = newText
-                    isLocationError = false
+                    isLocationError = taskLocation.isBlank()
                     coroutineScope.launch {
                         fetchLocationSuggestions(newText, placesClient) { suggestions ->
                             locationSuggestions = suggestions
@@ -169,7 +170,7 @@ fun TaskCreationScreen(navController: NavController) {
                 isError = isLocationError,
                 supportingText = {
                     if (isLocationError) {
-                        Text(text = stringResource(R.string.task_location_required))
+                        Text(" Task Location is required.")
                     }
                 }
             )
@@ -226,15 +227,7 @@ fun TaskCreationScreen(navController: NavController) {
             // Create Task and Cancel Buttons
             Button(
                 onClick = {
-                    if (taskName.isBlank()) {
-                        isTaskNameError = true
-                    }
-                    if (taskDeadline == null) {
-                        isTaskDeadlineError = true
-                    }
-                    if(taskLocation.isBlank()){
-                        isLocationError = true
-                    }
+
                     if (taskName.isNotBlank() && taskDeadline != null && taskLocation.isNotBlank()) {
                         scope.launch {
                             TaskService.createTask(
@@ -259,7 +252,7 @@ fun TaskCreationScreen(navController: NavController) {
                         }
                     } else {
                         scope.launch {
-                            snackbarHostState.showSnackbar( " Task Creation Failed")
+                            snackbarHostState.showSnackbar( "Please fill in all required fields")
                         }
                     }
                 },
@@ -282,18 +275,23 @@ fun TaskCreationScreen(navController: NavController) {
     if (showDatePicker) {
         val datePickerState = rememberDatePickerState()
         DatePickerDialog(
-            onDismissRequest = { showDatePicker = false },
+            onDismissRequest = {
+                isTaskDeadlineError = true
+                showDatePicker = false },
             confirmButton = {
                 TextButton(onClick = {
                     showDatePicker = false
                     selectedDate = datePickerState.selectedDateMillis
                     showTimePicker = true
+                    isTaskDeadlineError = false
                 }) {
                     Text(text = stringResource(R.string.ok))
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) {
+                TextButton(onClick = {
+                    isTaskDeadlineError = true
+                    showDatePicker = false }) {
                     Text(text = stringResource(R.string.cancel))
                 }
             }
@@ -304,7 +302,9 @@ fun TaskCreationScreen(navController: NavController) {
     if (showTimePicker) {
         val timePickerState = rememberTimePickerState(initialHour = 0, initialMinute = 0)
         DatePickerDialog(
-            onDismissRequest = { showTimePicker = false },
+            onDismissRequest = {
+                isTaskDeadlineError = true
+                showTimePicker = false },
             confirmButton = {
                 TextButton(onClick = {
                     showTimePicker = false
@@ -323,13 +323,16 @@ fun TaskCreationScreen(navController: NavController) {
                     localCalendar.set(Calendar.HOUR_OF_DAY, selectedHour)
                     localCalendar.set(Calendar.MINUTE, selectedMinute)
                     taskDeadline = localCalendar.time
+                    isTaskDeadlineError = false
                 }) {
                     Text(text = stringResource(R.string.ok))
                 }
 
             },
             dismissButton = {
-                TextButton(onClick = { showTimePicker = false }) {
+                TextButton(onClick = {
+                    isTaskDeadlineError = true
+                    showTimePicker = false }) {
                     Text(text = stringResource(R.string.cancel))
                 }
             }
