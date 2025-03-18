@@ -1,5 +1,6 @@
 package com.example.location_aware_personal_organizer.ui.dashboard
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,12 +13,17 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,12 +37,15 @@ import com.example.location_aware_personal_organizer.ui.Screen
 import com.example.location_aware_personal_organizer.ui.components.TaskItem
 import com.example.location_aware_personal_organizer.ui.theme.AppTypography
 import com.example.location_aware_personal_organizer.viewmodels.TaskViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(navController: NavController) {
     val taskViewModel: TaskViewModel = viewModel() // Initialize ViewModel
     val tasks by taskViewModel.tasks.collectAsStateWithLifecycle() // Observe tasks
+    val snackbarHostState = remember { SnackbarHostState() } // Snackbar state
+    val coroutineScope = rememberCoroutineScope() // CoroutineScope to show Snackbar
 
     LaunchedEffect(Unit) {
         taskViewModel.fetchTasks() // Fetch tasks when screen loads
@@ -45,7 +54,8 @@ fun DashboardScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Dashboard") })
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->
         Surface(
             modifier = Modifier
@@ -83,7 +93,18 @@ fun DashboardScreen(navController: NavController) {
                             modifier = Modifier.fillMaxSize()
                         ) {
                             items(tasks) { task ->
-                                TaskItem(task = task) // Display each task
+                                TaskItem(
+                                    task = task, // Display each task
+                                    onTaskDeleted = {
+                                        taskViewModel.fetchTasks() // Refresh task list after deletion
+                                        coroutineScope.launch {
+                                            snackbarHostState.showSnackbar(
+                                                message = "Task Deleted Successfully",
+                                                duration = SnackbarDuration.Short
+                                            )
+                                        }
+                                    }
+                                )
                             }
                         }
                     }
