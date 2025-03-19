@@ -145,6 +145,23 @@ class Authorization private constructor() {
                 }
         }
 
+        fun logout(successCallback: () -> Unit) : Boolean {
+            try {
+                auth.signOut()
+                Log.d("Logout", "User logged out successfully")
+                Log.d("Logout", auth.currentUser.toString())
+                successCallback()
+                return true
+            } catch (e: Exception) {
+                Log.w("Logout", "User logout failed", e)
+                return false
+            }
+        }
+
+        fun getUsername() : String {
+            return auth.currentUser!!.displayName!!
+        }
+
         fun isValidEmail(email: String) : Boolean {
             return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
         }

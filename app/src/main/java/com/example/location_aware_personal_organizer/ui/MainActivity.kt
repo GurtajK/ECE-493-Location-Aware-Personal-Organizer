@@ -21,8 +21,13 @@ import com.example.location_aware_personal_organizer.ui.theme.AppTheme
 import com.google.android.libraries.places.api.Places
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 
 class MainActivity : ComponentActivity() {
+    private val auth: FirebaseAuth = Firebase.auth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Authorization.getInstance();
         enableEdgeToEdge()
@@ -44,7 +49,7 @@ class MainActivity : ComponentActivity() {
                     val navController: NavHostController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.Login.route
+                        startDestination = if (auth.currentUser != null) Screen.Dashboard.route else Screen.Login.route
                     ) {
                         composable(Screen.Login.route) {
                             LoginScreen(navController)
