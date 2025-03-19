@@ -22,9 +22,11 @@ import com.google.android.libraries.places.api.Places
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.util.Log
+import com.google.android.libraries.places.api.net.PlacesClient
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
         Authorization.getInstance();
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -32,11 +34,11 @@ class MainActivity : ComponentActivity() {
         // Retrieve API key securely from the manifest
         val ai: ApplicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
         val apiKey = ai.metaData.getString("com.google.android.geo.API_KEY")
-        Log.d("MainActivity", "API Key: $apiKey")
 
         if (!Places.isInitialized() && apiKey != null) {
-            Places.initialize(applicationContext, apiKey)
+            Places.initializeWithNewPlacesApiEnabled(applicationContext, apiKey);
         }
+
         setContent {
             AppTheme {
                 Surface(
@@ -65,4 +67,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+
 }
