@@ -55,6 +55,13 @@ fun DashboardScreen(navController: NavController) {
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.weight(1f))
+                    // Button to Navigate to Notification Settings
+                    Button(
+                        onClick = { navController.navigate(Screen.NotificationSettings.route) },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Notification Settings")
+                    }
                 }
                 CreateNewTaskButton(
                     navController = navController,
