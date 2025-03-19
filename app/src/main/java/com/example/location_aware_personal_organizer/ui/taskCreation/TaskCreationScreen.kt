@@ -54,7 +54,7 @@ import java.util.TimeZone
 @Composable
 fun TaskCreationScreen(navController: NavController) {
     RequestLocationPermission()
-    Log.d("TaskCreationScreen", "Composing TaskCreationScreen")
+
 
     var taskName by remember { mutableStateOf("") }
     var taskDeadline by remember { mutableStateOf<Date?>(null) }
@@ -158,6 +158,7 @@ fun TaskCreationScreen(navController: NavController) {
                     taskLocation = newText
                     isLocationError = taskLocation.isBlank()
                     coroutineScope.launch {
+                        Log.d("TaskCreationScreen", "Fetching location suggestions for: $newText")
                         fetchLocationSuggestions(newText, placesClient) { suggestions ->
                             locationSuggestions = suggestions
                         }

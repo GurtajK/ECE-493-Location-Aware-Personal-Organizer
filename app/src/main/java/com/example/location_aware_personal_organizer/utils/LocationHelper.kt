@@ -32,6 +32,7 @@ suspend fun fetchLocationSuggestions(
                 onResult(predictions)
             }
             .addOnFailureListener {
+                it.printStackTrace()
                 onResult(emptyList()) // Return empty list if API call fails
             }
     }

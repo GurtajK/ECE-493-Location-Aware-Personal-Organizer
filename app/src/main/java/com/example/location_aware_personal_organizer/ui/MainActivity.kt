@@ -21,6 +21,7 @@ import com.example.location_aware_personal_organizer.ui.theme.AppTheme
 import com.google.android.libraries.places.api.Places
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.util.Log
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +32,7 @@ class MainActivity : ComponentActivity() {
         // Retrieve API key securely from the manifest
         val ai: ApplicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
         val apiKey = ai.metaData.getString("com.google.android.geo.API_KEY")
+        Log.d("MainActivity", "API Key: $apiKey")
 
         if (!Places.isInitialized() && apiKey != null) {
             Places.initialize(applicationContext, apiKey)
