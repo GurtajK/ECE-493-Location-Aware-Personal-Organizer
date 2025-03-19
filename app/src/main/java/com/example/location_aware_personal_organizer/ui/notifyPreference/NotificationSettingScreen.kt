@@ -9,6 +9,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,7 +47,21 @@ fun NotificationSettingsScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Notification Settings", style = MaterialTheme.typography.headlineMedium)
+
+        // Back Button to Dashboard
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = { navController.navigateUp() }) {
+                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            }
+            Text(
+                text = "Notification Settings",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(start = 8.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -71,20 +88,20 @@ fun NotificationSettingsScreen(
             }
         )
 
-        // **NEW**: Button to send test notification
-//        Button(onClick = {
-//            if (isPermissionGranted) {
-//                NotificationHelper(context).sendNotification(
-//                    title = "Test Notification",
-//                    message = "This is a test notification from your app!"
-//                )
-//            } else {
-//                Toast.makeText(context, "Please enable notifications first", Toast.LENGTH_SHORT).show()
-//            }
-//        }) {
-//            Text("Send Test Notification")
-//        }
+        Spacer(modifier = Modifier.height(20.dp))
 
-
+        //  Send Test Notification Button
+        Button(onClick = {
+            if (isPermissionGranted) {
+                NotificationHelper(context).sendNotification(
+                    title = "Test Notification",
+                    message = "This is a test notification from your app!"
+                )
+            } else {
+                Toast.makeText(context, "Please enable notifications first", Toast.LENGTH_SHORT).show()
+            }
+        }) {
+            Text("Send Test Notification")
+        }
     }
 }
