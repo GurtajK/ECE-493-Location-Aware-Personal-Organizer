@@ -52,7 +52,7 @@ import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskCreationScreen(navController: NavController) {
+fun TaskCreationScreen(navController: NavController, latitude: Float, longitude: Float) {
     RequestLocationPermission()
 
 
@@ -162,7 +162,7 @@ fun TaskCreationScreen(navController: NavController) {
                 },
                 onFetchSuggestions = { query ->
                     coroutineScope.launch {
-                        fetchLocationSuggestions(query, placesClient) { suggestions ->
+                        fetchLocationSuggestions(query, placesClient, latitude, longitude) { suggestions ->
                             locationSuggestions = suggestions
                         }
                     }

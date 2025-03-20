@@ -11,6 +11,8 @@ import kotlinx.coroutines.withContext
 suspend fun fetchLocationSuggestions(
     query: String,
     placesClient: PlacesClient,
+    latitude: Float,
+    longitude: Float,
     onResult: (List<String>) -> Unit
 ) {
     withContext(Dispatchers.IO) { // Run this on a background thread
@@ -19,7 +21,11 @@ suspend fun fetchLocationSuggestions(
             return@withContext
         }
 
-        val center = LatLng(53.631611, -113.323975)
+        val latitudeDouble = latitude.toDouble()
+        val longitudeDouble = longitude.toDouble()
+
+
+        val center = LatLng(latitudeDouble, longitudeDouble)
         val circle = CircularBounds.newInstance(center,  /* radius = */50000.0)
 
         val request = FindAutocompletePredictionsRequest.builder()
