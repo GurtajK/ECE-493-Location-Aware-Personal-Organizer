@@ -23,10 +23,14 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.util.Log
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
+    private val auth: FirebaseAuth = Firebase.auth
 
+    override fun onCreate(savedInstanceState: Bundle?) {
         Authorization.getInstance();
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -38,7 +42,6 @@ class MainActivity : ComponentActivity() {
         if (!Places.isInitialized() && apiKey != null) {
             Places.initializeWithNewPlacesApiEnabled(applicationContext, apiKey);
         }
-
         setContent {
             AppTheme {
                 Surface(
@@ -48,7 +51,7 @@ class MainActivity : ComponentActivity() {
                     val navController: NavHostController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.Login.route
+                        startDestination = if (auth.currentUser != null) Screen.Dashboard.route else Screen.Login.route
                     ) {
                         composable(Screen.Login.route) {
                             LoginScreen(navController)
@@ -67,6 +70,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-
 }
