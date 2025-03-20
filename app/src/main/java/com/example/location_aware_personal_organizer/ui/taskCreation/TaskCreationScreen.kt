@@ -151,47 +151,23 @@ fun TaskCreationScreen(navController: NavController) {
                 interactionSource = interactionSource
             )
 
-            // Location Field
-            OutlinedTextField(
-                value = taskLocation,
-                onValueChange = { newText ->
-                    taskLocation = newText
-                    isLocationError = taskLocation.isBlank()
+            // Location Input Field
+            LocationInputField(
+                taskLocation = taskLocation,
+                onTaskLocationChange = { taskLocation = it },
+                locationSuggestions = locationSuggestions,
+                onSuggestionSelected = { selectedLocation ->
+                    taskLocation = selectedLocation
+                    locationSuggestions = emptyList() // Hide dropdown after selection
+                },
+                onFetchSuggestions = { query ->
                     coroutineScope.launch {
-                        Log.d("TaskCreationScreen", "Fetching location suggestions for: $newText")
-                        fetchLocationSuggestions(newText, placesClient) { suggestions ->
+                        fetchLocationSuggestions(query, placesClient) { suggestions ->
                             locationSuggestions = suggestions
                         }
                     }
-                },
-                label = { Text("Task Location") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                isError = isLocationError,
-                supportingText = {
-                    if (isLocationError) {
-                        Text(" Task Location is required.")
-                    }
                 }
             )
-
-            // Display suggestions
-            DropdownMenu(
-                expanded = locationSuggestions.isNotEmpty(),
-                onDismissRequest = { locationSuggestions = emptyList() }
-            ) {
-                locationSuggestions.forEach { suggestion ->
-                    DropdownMenuItem(
-                        text = { Text(suggestion) },
-                        onClick = {
-                            taskLocation = suggestion
-                            locationSuggestions = emptyList()
-                        }
-                    )
-                }
-            }
-
 
             // Time to Notify Field
             ExposedDropdownMenuBox(
