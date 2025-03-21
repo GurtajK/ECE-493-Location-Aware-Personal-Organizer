@@ -70,6 +70,13 @@ fun DashboardScreen(navController: NavController) {
                         onDismissRequest = { menuExpanded = false }
                     ) {
                         DropdownMenuItem(
+                            text = { Text("Settings") },
+                            onClick = {
+                                menuExpanded = false
+                                navController.navigate(Screen.NotificationSettings.route) // Navigate to Settings
+                            }
+                        )
+                        DropdownMenuItem(
                             text = { Text("Logout") },
                             onClick = { menuExpanded = false; Authorization.logout { navController.navigate(Screen.Login.route) } }
                         )
