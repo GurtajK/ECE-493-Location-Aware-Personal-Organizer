@@ -47,6 +47,7 @@ fun NotificationSettingsScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Back Button to Dashboard
         Row(
@@ -59,7 +60,7 @@ fun NotificationSettingsScreen(
             Text(
                 text = "Notification Settings",
                 style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier.padding(start = 12.dp)
             )
         }
 
