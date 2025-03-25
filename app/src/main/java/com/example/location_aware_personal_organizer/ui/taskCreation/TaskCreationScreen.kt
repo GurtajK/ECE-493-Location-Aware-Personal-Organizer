@@ -39,10 +39,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.location_aware_personal_organizer.R
+import com.example.location_aware_personal_organizer.data.LocationSuggestion
 import com.example.location_aware_personal_organizer.services.RequestLocationPermission
 import com.example.location_aware_personal_organizer.services.TaskService
 import com.example.location_aware_personal_organizer.utils.fetchLocationSuggestions
 import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.FetchPlaceRequest
+import com.google.firebase.firestore.GeoPoint
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -74,9 +78,10 @@ fun TaskCreationScreen(navController: NavController, latitude: Float, longitude:
     val timeToNotifyOptions = listOf(5, 10, 15, 30, 60)
     val isPressed by interactionSource.collectIsPressedAsState()
     var taskLocation by remember { mutableStateOf("") }
+    var taskGeoPoint by remember { mutableStateOf<GeoPoint?>(null) }
     val context = LocalContext.current
     val placesClient = remember(context) { Places.createClient(context) }
-    var locationSuggestions by remember { mutableStateOf<List<String>>(emptyList()) }
+    var locationSuggestions by remember { mutableStateOf<List<LocationSuggestion>>(emptyList()) }
     var isLocationError by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -157,8 +162,25 @@ fun TaskCreationScreen(navController: NavController, latitude: Float, longitude:
                 onTaskLocationChange = { taskLocation = it },
                 locationSuggestions = locationSuggestions,
                 onSuggestionSelected = { selectedLocation ->
-                    taskLocation = selectedLocation
+                    taskLocation = selectedLocation.name
                     locationSuggestions = emptyList() // Hide dropdown after selection
+
+                val request = FetchPlaceRequest.builder(
+                    selectedLocation.placeId,
+                    listOf(Place.Field.LAT_LNG)
+                ).build()
+
+                placesClient.fetchPlace(request)
+                    .addOnSuccessListener { response ->
+                        val latLng = response.place.latLng
+                        if (latLng != null) {
+                            taskGeoPoint = GeoPoint(latLng.latitude, latLng.longitude)
+                            Log.d("Location", "Selected GeoPoint: $taskGeoPoint")
+                        }
+                    }
+                    .addOnFailureListener {
+                        Log.e("Location", "Failed to fetch place LatLng", it)
+                    }
                 },
                 onFetchSuggestions = { query ->
                     coroutineScope.launch {
@@ -211,7 +233,8 @@ fun TaskCreationScreen(navController: NavController, latitude: Float, longitude:
                                 title = taskName,
                                 description = taskDescription,
                                 deadline = taskDeadline!!,
-                                location = taskLocation,
+                                location = taskGeoPoint,
+                                locationName = taskLocation,
                                 notify = timeToNotify,
                                 context = context,
                                 onSuccess = {

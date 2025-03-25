@@ -10,14 +10,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.example.location_aware_personal_organizer.data.LocationSuggestion
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationInputField(
     taskLocation: String,
     onTaskLocationChange: (String) -> Unit,
-    locationSuggestions: List<String>,
-    onSuggestionSelected: (String) -> Unit,
+    locationSuggestions: List<LocationSuggestion>,
+    onSuggestionSelected: (LocationSuggestion) -> Unit,
     onFetchSuggestions: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) } // Controls dropdown visibility
@@ -49,7 +50,7 @@ fun LocationInputField(
         ) {
             locationSuggestions.forEach { suggestion ->
                 DropdownMenuItem(
-                    text = { Text(suggestion) },
+                    text = { Text(suggestion.name) },
                     onClick = {
                         onSuggestionSelected(suggestion) // Set selected location
                         expanded = false // Close dropdown

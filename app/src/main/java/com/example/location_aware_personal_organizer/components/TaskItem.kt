@@ -68,12 +68,8 @@ fun TaskItem(task: Task, onTaskDeleted: () -> Unit) {
                     Text("Due: $formattedDate", style = MaterialTheme.typography.bodySmall)
                 }
 
-                // Task Location (Stored as String)
-                if (task.location.isNotBlank()) {
-                    Text("Location: ${task.location}", style = MaterialTheme.typography.bodySmall)
-                } else {
-                    Text("Location: Not specified", style = MaterialTheme.typography.bodySmall)
-                }
+                // Task Location (Stored as GeoPoint in Firestore)
+                Text("Location: ${task.locationName}", style = MaterialTheme.typography.bodySmall)
 
                 // Task Notification Time (Time to Notify)
                 if (task.notify > 0) {

@@ -9,6 +9,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 import java.util.Date
@@ -21,7 +22,8 @@ object TaskService {
         title: String,
         description: String,
         deadline: Date,
-        location: String,
+        location: GeoPoint?,
+        locationName: String,
         notify: Int,
         context: Context,
         onSuccess: () -> Unit,
@@ -44,6 +46,7 @@ object TaskService {
             description = description,
             deadline = com.google.firebase.Timestamp(deadline),
             location = location,
+            locationName = locationName,
             notify = notify,
             complete = false,
             user = username
