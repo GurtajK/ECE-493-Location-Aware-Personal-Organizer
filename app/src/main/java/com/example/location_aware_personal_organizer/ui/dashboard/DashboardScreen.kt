@@ -131,7 +131,6 @@ fun DashboardScreen(navController: NavController) {
                         value = searchQuery,
                         onValueChange = { searchQuery = it },
                         label = { Text("Search tasks by title/description") },
-                        placeholder = { Text("e.g. groceries, meeting, dentist...") },
                         leadingIcon = {
                             Icon(Icons.Default.Search, contentDescription = "Search Icon")
                         },
