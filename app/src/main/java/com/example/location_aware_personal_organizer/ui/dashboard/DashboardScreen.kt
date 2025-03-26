@@ -9,11 +9,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -52,6 +60,12 @@ fun DashboardScreen(navController: NavController) {
     val tasks by taskViewModel.tasks.collectAsStateWithLifecycle() // Observe tasks
     val snackbarHostState = remember { SnackbarHostState() } // Snackbar state
     val coroutineScope = rememberCoroutineScope() // CoroutineScope to show Snackbar
+    var searchQuery by remember { mutableStateOf("") }
+    val filteredTasks = tasks.filter { task ->
+        task.title.contains(searchQuery, ignoreCase = true) ||
+                task.description.contains(searchQuery, ignoreCase = true)
+    }
+
 
     LaunchedEffect(Unit) {
         taskViewModel.fetchTasks() // Fetch tasks when screen loads
@@ -111,9 +125,36 @@ fun DashboardScreen(navController: NavController) {
                 Column(
                     modifier = Modifier.weight(1f) // Ensures list takes available space but doesn't push button away
                 ) {
-                    if (tasks.isEmpty()) {
+
+                    // Search Bar
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        label = { Text("Search tasks by title/description") },
+                        placeholder = { Text("e.g. groceries, meeting, dentist...") },
+                        leadingIcon = {
+                            Icon(Icons.Default.Search, contentDescription = "Search Icon")
+                        },
+                        trailingIcon = {
+                            if (searchQuery.isNotEmpty()) {
+                                IconButton(onClick = { searchQuery = "" }) {
+                                    Icon(Icons.Default.Close, contentDescription = "Clear Search")
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
+                        shape = RoundedCornerShape(50),
+                        singleLine = true,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                            focusedBorderColor = MaterialTheme.colorScheme.primary
+                        )
+                    )
+                    if (filteredTasks.isEmpty()) {
                         Text(
-                            text = "No tasks available.",
+                            text = "No matching tasks found.",
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -121,7 +162,7 @@ fun DashboardScreen(navController: NavController) {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            items(tasks) { task ->
+                            items(filteredTasks) { task ->
                                 TaskItem(
                                     task = task, // Display each task
                                     onTaskDeleted = {
