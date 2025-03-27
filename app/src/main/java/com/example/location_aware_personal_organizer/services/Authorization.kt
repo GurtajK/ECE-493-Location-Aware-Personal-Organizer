@@ -75,6 +75,11 @@ class Authorization private constructor() {
                                             .set(userdata)
                                             .addOnSuccessListener {
                                                 successCallback();
+                                                Toast.makeText(
+                                                    context,
+                                                    "Registration successful",
+                                                    Toast.LENGTH_SHORT,
+                                                ).show()
                                                 Log.d("Register", "User created successfully")
                                             }
                                             .addOnFailureListener { e ->
