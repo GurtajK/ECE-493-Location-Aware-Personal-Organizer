@@ -1,6 +1,5 @@
 package com.example.location_aware_personal_organizer.ui.dashboard
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -148,31 +147,31 @@ fun DashboardScreen(navController: NavController) {
                     modifier = Modifier.weight(1f) // Ensures list takes available space but doesn't push button away
                 ) {
 
-//                    // Search Bar
-//                    OutlinedTextField(
-//                        value = searchQuery,
-//                        onValueChange = { searchQuery = it },
-//                        label = { Text("Search tasks by title/description") },
-//                        leadingIcon = {
-//                            Icon(Icons.Default.Search, contentDescription = "Search Icon")
-//                        },
-//                        trailingIcon = {
-//                            if (searchQuery.isNotEmpty()) {
-//                                IconButton(onClick = { searchQuery = "" }) {
-//                                    Icon(Icons.Default.Close, contentDescription = "Clear Search")
-//                                }
-//                            }
-//                        },
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(bottom = 8.dp),
-//                        shape = RoundedCornerShape(50),
-//                        singleLine = true,
-//                        colors = OutlinedTextFieldDefaults.colors(
-//                            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-//                            focusedBorderColor = MaterialTheme.colorScheme.primary
-//                        )
-//                    )
+                    // Search Bar
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        label = { Text("Search tasks by title/description") },
+                        leadingIcon = {
+                            Icon(Icons.Default.Search, contentDescription = "Search Icon")
+                        },
+                        trailingIcon = {
+                            if (searchQuery.isNotEmpty()) {
+                                IconButton(onClick = { searchQuery = "" }) {
+                                    Icon(Icons.Default.Close, contentDescription = "Clear Search")
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
+                        shape = RoundedCornerShape(50),
+                        singleLine = true,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                            focusedBorderColor = MaterialTheme.colorScheme.primary
+                        )
+                    )
                     if (filteredTasks.isEmpty()) {
                         Text(
                             text = "No matching tasks found.",
@@ -215,11 +214,9 @@ fun DashboardScreen(navController: NavController) {
     }
     if (isFilterDialogOpen) {
         FilterDialog(
-            initialQuery = searchQuery,
             initialLocation = locationFilter,
             initialDeadline = deadlineFilter,
-            onApplyFilters = { query, location, deadline ->
-                searchQuery = query
+            onApplyFilters = {location, deadline ->
                 locationFilter = location
                 deadlineFilter = deadline
             },
