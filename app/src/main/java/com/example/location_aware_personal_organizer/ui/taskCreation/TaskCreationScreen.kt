@@ -75,7 +75,15 @@ fun TaskCreationScreen(navController: NavController) {
     val isPressed by interactionSource.collectIsPressedAsState()
     var taskLocation by remember { mutableStateOf("") }
     val context = LocalContext.current
-    val placesClient = remember(context) { Places.createClient(context) }
+//    val placesClient = remember(context) { Places.createClient(context) }
+    val placesClient = remember(context) {
+        if (!Places.isInitialized()) {
+            null
+        } else {
+            Places.createClient(context)
+        }
+    }
+
     var locationSuggestions by remember { mutableStateOf<List<String>>(emptyList()) }
     var isLocationError by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
@@ -158,8 +166,10 @@ fun TaskCreationScreen(navController: NavController) {
                     taskLocation = newText
                     isLocationError = taskLocation.isBlank()
                     coroutineScope.launch {
-                        fetchLocationSuggestions(newText, placesClient) { suggestions ->
-                            locationSuggestions = suggestions
+                        if (placesClient != null) {
+                            fetchLocationSuggestions(newText, placesClient) { suggestions ->
+                                locationSuggestions = suggestions
+                            }
                         }
                     }
                 },
