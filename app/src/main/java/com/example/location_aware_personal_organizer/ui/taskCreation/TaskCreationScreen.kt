@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -28,6 +27,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -40,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.location_aware_personal_organizer.R
 import com.example.location_aware_personal_organizer.data.LocationSuggestion
-import com.example.location_aware_personal_organizer.services.RequestLocationPermission
 import com.example.location_aware_personal_organizer.services.TaskService
 import com.example.location_aware_personal_organizer.utils.fetchLocationSuggestions
 import com.google.android.libraries.places.api.Places
@@ -57,12 +56,10 @@ import java.util.TimeZone
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskCreationScreen(navController: NavController, latitude: Float, longitude: Float) {
-    RequestLocationPermission()
-
 
     var taskName by remember { mutableStateOf("") }
     var taskDeadline by remember { mutableStateOf<Date?>(null) }
-    var timeToNotify by remember { mutableStateOf(15) } // Default to 15 minutes
+    var timeToNotify by remember { mutableIntStateOf(15) } // Default to 15 minutes
     var taskDescription by remember { mutableStateOf("") }
     var isTaskNameError by remember { mutableStateOf(true) }
     var isTaskDeadlineError by remember { mutableStateOf(true) }
@@ -71,8 +68,8 @@ fun TaskCreationScreen(navController: NavController, latitude: Float, longitude:
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var selectedDate by remember { mutableStateOf<Long?>(null) }
-    var selectedHour by remember { mutableStateOf(0) }
-    var selectedMinute by remember { mutableStateOf(0) }
+    var selectedHour by remember { mutableIntStateOf(0) }
+    var selectedMinute by remember { mutableIntStateOf(0) }
     var isExpanded by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
     val timeToNotifyOptions = listOf(5, 10, 15, 30, 60)
@@ -82,7 +79,6 @@ fun TaskCreationScreen(navController: NavController, latitude: Float, longitude:
     val context = LocalContext.current
     val placesClient = remember(context) { Places.createClient(context) }
     var locationSuggestions by remember { mutableStateOf<List<LocationSuggestion>>(emptyList()) }
-    var isLocationError by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
 
     if (isPressed) {
@@ -143,7 +139,7 @@ fun TaskCreationScreen(navController: NavController, latitude: Float, longitude:
                     .padding(bottom = 8.dp),
                 trailingIcon = {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_calendar), // Replace with your calendar icon
+                        painter = painterResource(id = R.drawable.ic_calendar),
                         contentDescription = stringResource(R.string.select_date_time)
                     )
                 },
