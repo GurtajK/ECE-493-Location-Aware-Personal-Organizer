@@ -1,6 +1,7 @@
 package com.example.location_aware_personal_organizer.utils
 
 import com.example.location_aware_personal_organizer.data.LocationSuggestion
+import com.example.location_aware_personal_organizer.services.Location
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.CircularBounds
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
@@ -12,8 +13,6 @@ import kotlinx.coroutines.withContext
 suspend fun fetchLocationSuggestions(
     query: String,
     placesClient: PlacesClient,
-    latitude: Float,
-    longitude: Float,
     onResult: (List<LocationSuggestion>) -> Unit
 ) {
     withContext(Dispatchers.IO) { // Run this on a background thread
@@ -22,8 +21,8 @@ suspend fun fetchLocationSuggestions(
             return@withContext
         }
 
-        val latitudeDouble = latitude.toDouble()
-        val longitudeDouble = longitude.toDouble()
+        val latitudeDouble = Location.latitude.toDouble()
+        val longitudeDouble = Location.longitude.toDouble()
 
 
         val center = LatLng(latitudeDouble, longitudeDouble)

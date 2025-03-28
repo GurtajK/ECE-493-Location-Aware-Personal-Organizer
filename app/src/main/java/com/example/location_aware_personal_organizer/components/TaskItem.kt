@@ -96,6 +96,9 @@ fun TaskItem(
                     style = MaterialTheme.typography.bodySmall
                 )
 
+                Text(text = "Priority (DEBUGGING ONLY): ${task.priority}", style = MaterialTheme.typography.bodySmall)
+
+                // Delete Confirmation Dialog
                 if (showDialog) {
                     AlertDialog(
                         onDismissRequest = { showDialog = false },

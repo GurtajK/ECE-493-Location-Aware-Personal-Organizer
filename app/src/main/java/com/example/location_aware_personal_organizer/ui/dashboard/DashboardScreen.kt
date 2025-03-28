@@ -86,6 +86,7 @@ fun DashboardScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         taskViewModel.fetchTasks() // Fetch tasks when screen loads
     }
+
     var menuExpanded by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {

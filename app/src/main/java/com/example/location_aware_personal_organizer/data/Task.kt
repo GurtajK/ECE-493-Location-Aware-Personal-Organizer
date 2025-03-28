@@ -13,5 +13,11 @@ data class Task(
     val locationName: String = "",
     val notify: Int = 0,
     var complete: Boolean = false,
-    val user: String = ""
+    val user: String = "",
+
+    // default to not being prioritized (i.e. above the threshold)
+    var distance_priority : Double = Double.MAX_VALUE,
+    var time_priority : Double = Double.MAX_VALUE,
+    var priority: Double = Double.MAX_VALUE,
+    var distance: Double = Double.MAX_VALUE,
 )
