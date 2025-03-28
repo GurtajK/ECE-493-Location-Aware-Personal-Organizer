@@ -135,7 +135,7 @@ fun DashboardScreen(navController: NavController) {
                                     },
                                     onMarkedCompleted = {
                                         // Navigate to the Completed Tasks screen
-                                        navController.navigate(Screen.CompletedTasks.route)
+                                        navController.navigate(Screen.CompletedTasks.withTaskCompletedFlag())
                                     }
                                 )
                             }

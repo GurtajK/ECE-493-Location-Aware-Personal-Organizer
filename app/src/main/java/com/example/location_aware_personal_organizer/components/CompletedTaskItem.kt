@@ -1,11 +1,21 @@
-package com.example.location_aware_personal_organizer.ui.components
+package com.example.location_aware_personal_organizer.components
 
-import android.widget.Toast
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,10 +32,10 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun TaskItem(
+fun CompletedTaskItem(
     task: Task,
     onTaskDeleted: () -> Unit,
-    onMarkedCompleted: () -> Unit
+    onUndoClicked: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) } // Track if the dialog is open
@@ -39,32 +49,26 @@ fun TaskItem(
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
 
-                IconButton(
-                    onClick = { showDialog = true },
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete Task",
-                        tint = MaterialTheme.colorScheme.error
-                    )
-                }
-                Checkbox(
-                    checked = task.complete,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(8.dp),
-                    onCheckedChange = {
-                        if (!task.complete) {
-                            coroutineScope.launch {
-                                TaskService.markTaskAsCompleted(task.id!!) // Update in Firestore
-                                onMarkedCompleted() // Navigate to Completed Tasks screen
-                            }
-                        }
-                    }
+            IconButton(
+                onClick = { showDialog = true },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete Task",
+                    tint = MaterialTheme.colorScheme.error
                 )
+            }
+            TextButton(
+                onClick = onUndoClicked,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+            ) {
+                Text("Undo")
+            }
 
             Column(
                 modifier = Modifier.padding(16.dp)

@@ -114,4 +114,10 @@ object TaskService {
         val taskRef = Firebase.firestore.collection("tasks").document(taskId)
         taskRef.update("complete", true)
     }
+
+    fun markTaskAsIncomplete(taskId: String) {
+        val taskRef = Firebase.firestore.collection("tasks").document(taskId)
+        taskRef.update("complete", false)
+    }
+
 }
