@@ -12,6 +12,6 @@ data class Task(
     val location: GeoPoint? = null,
     val locationName: String = "",
     val notify: Int = 0,
-    val complete: Boolean = false,
+    var complete: Boolean = false,
     val user: String = ""
 )

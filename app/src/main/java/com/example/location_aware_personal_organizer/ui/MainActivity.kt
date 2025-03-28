@@ -120,6 +120,8 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.navigation.navArgument
+import com.example.location_aware_personal_organizer.ui.completedTasks.CompletedTasksScreen
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.net.PlacesClient
@@ -172,6 +174,15 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(Screen.NotificationSettings.route) {
                             NotificationSettingsScreen(navController)
+                        }
+                        composable(
+                            route = "completed_tasks?taskCompleted={taskCompleted}",
+                            arguments = listOf(navArgument("taskCompleted") {
+                                defaultValue = "false"
+                            })
+                        ) { backStackEntry ->
+                            val showSnackbar = backStackEntry.arguments?.getString("taskCompleted").toBoolean()
+                            CompletedTasksScreen(navController, showSnackbar = showSnackbar)
                         }
                     }
                 }

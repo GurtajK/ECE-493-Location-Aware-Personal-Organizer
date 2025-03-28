@@ -193,6 +193,10 @@ fun DashboardScreen(navController: NavController) {
                                                 duration = SnackbarDuration.Short
                                             )
                                         }
+                                    },
+                                    onMarkedCompleted = {
+                                        // Navigate to the Completed Tasks screen
+                                        navController.navigate(Screen.CompletedTasks.withTaskCompletedFlag())
                                     }
                                 )
                             }
