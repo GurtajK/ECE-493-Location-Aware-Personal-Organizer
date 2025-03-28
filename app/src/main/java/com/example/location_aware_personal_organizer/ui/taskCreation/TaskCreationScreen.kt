@@ -56,9 +56,8 @@ import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskCreationScreen(navController: NavController, latitude: Float, longitude: Float) {
+fun TaskCreationScreen(navController: NavController) {
     RequestLocationPermission()
-
 
     var taskName by remember { mutableStateOf("") }
     var taskDeadline by remember { mutableStateOf<Date?>(null) }
@@ -165,26 +164,26 @@ fun TaskCreationScreen(navController: NavController, latitude: Float, longitude:
                     taskLocation = selectedLocation.name
                     locationSuggestions = emptyList() // Hide dropdown after selection
 
-                val request = FetchPlaceRequest.builder(
-                    selectedLocation.placeId,
-                    listOf(Place.Field.LAT_LNG)
-                ).build()
+                    val request = FetchPlaceRequest.builder(
+                        selectedLocation.placeId,
+                        listOf(Place.Field.LAT_LNG)
+                    ).build()
 
-                placesClient.fetchPlace(request)
-                    .addOnSuccessListener { response ->
-                        val latLng = response.place.latLng
-                        if (latLng != null) {
-                            taskGeoPoint = GeoPoint(latLng.latitude, latLng.longitude)
-                            Log.d("Location", "Selected GeoPoint: $taskGeoPoint")
+                    placesClient.fetchPlace(request)
+                        .addOnSuccessListener { response ->
+                            val latLng = response.place.latLng
+                            if (latLng != null) {
+                                taskGeoPoint = GeoPoint(latLng.latitude, latLng.longitude)
+                                Log.d("Location", "Selected GeoPoint: $taskGeoPoint")
+                            }
                         }
-                    }
-                    .addOnFailureListener {
-                        Log.e("Location", "Failed to fetch place LatLng", it)
-                    }
+                        .addOnFailureListener {
+                            Log.e("Location", "Failed to fetch place LatLng", it)
+                        }
                 },
                 onFetchSuggestions = { query ->
                     coroutineScope.launch {
-                        fetchLocationSuggestions(query, placesClient, latitude, longitude) { suggestions ->
+                        fetchLocationSuggestions(query, placesClient) { suggestions ->
                             locationSuggestions = suggestions
                         }
                     }
@@ -226,7 +225,6 @@ fun TaskCreationScreen(navController: NavController, latitude: Float, longitude:
             // Create Task and Cancel Buttons
             Button(
                 onClick = {
-
                     if (taskName.isNotBlank() && taskDeadline != null && taskLocation.isNotBlank()) {
                         scope.launch {
                             TaskService.createTask(

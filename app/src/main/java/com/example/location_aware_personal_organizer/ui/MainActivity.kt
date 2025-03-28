@@ -117,26 +117,22 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import com.google.android.gms.location.FusedLocationProviderClient
+import com.example.location_aware_personal_organizer.services.Location
+import com.example.location_aware_personal_organizer.services.PriorityService
 import com.google.android.gms.location.LocationServices
-import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import kotlin.properties.Delegates
 
 class MainActivity : ComponentActivity() {
     private val auth: FirebaseAuth = Firebase.auth
 
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private var latitude by Delegates.notNull<Float>()
-    private var longitude by Delegates.notNull<Float>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        Authorization.getInstance();
+        Authorization.getInstance()
+        PriorityService.getInstance()
+        Location.getInstance()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
@@ -145,8 +141,12 @@ class MainActivity : ComponentActivity() {
         val apiKey = ai.metaData.getString("com.google.android.geo.API_KEY")
 
         if (!Places.isInitialized() && apiKey != null) {
-            Places.initializeWithNewPlacesApiEnabled(applicationContext, apiKey);
+            Places.initializeWithNewPlacesApiEnabled(applicationContext, apiKey)
         }
+
+        Location.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        updateCurrentLocation()
+
         setContent {
             AppTheme {
                 Surface(
@@ -168,7 +168,7 @@ class MainActivity : ComponentActivity() {
                             DashboardScreen(navController)
                         }
                         composable(Screen.TaskCreation.route) {
-                            TaskCreationScreen(navController, latitude, longitude)
+                            TaskCreationScreen(navController)
                         }
                         composable(Screen.NotificationSettings.route) {
                             NotificationSettingsScreen(navController)
@@ -177,16 +177,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-
-
-        getCurrentLocation()
     }
 
-    private fun getCurrentLocation()
+    private fun updateCurrentLocation()
     {
-
         if(checkPermissions())
         {
             if(isLocationEnabled())
@@ -203,18 +197,17 @@ class MainActivity : ComponentActivity() {
                     requestPermission()
                     return
                 }
-                fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->
+
+                Location.fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->
                     val location: android.location.Location? = task.result
                     if (location == null) {
                         Toast.makeText(this, "Null Received", Toast.LENGTH_SHORT).show()
                     }
                     else {
                         Toast.makeText(this, "Get Success", Toast.LENGTH_SHORT).show()
-                        latitude = location.latitude.toFloat()
-                        longitude = location.longitude.toFloat()
+                        Location.setLocation(location.latitude, location.longitude)
                     }
                 }
-
             }
             else
             {
@@ -222,18 +215,13 @@ class MainActivity : ComponentActivity() {
                 Toast.makeText(this, "Turn on location", Toast.LENGTH_SHORT).show()
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 startActivity(intent)
-
             }
         }
         else
         {
             // request permission here
-
             requestPermission()
-
         }
-
-
     }
 
     private fun isLocationEnabled(): Boolean{
@@ -244,8 +232,8 @@ class MainActivity : ComponentActivity() {
 
     private fun requestPermission() {
         ActivityCompat.requestPermissions(
-     this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION),
+     this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION),
             PERMISSION_REQUEST_ACCESS_LOCATION
         )
     }
@@ -256,15 +244,10 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun checkPermissions(): Boolean {
-        if(ActivityCompat.checkSelfPermission(this,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION)
+        return (ActivityCompat.checkSelfPermission(this,
+            Manifest.permission.ACCESS_COARSE_LOCATION)
             ==PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-            android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-        {
-            return true
-        }
-
-        return false
+            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
     }
 
     override fun onRequestPermissionsResult(
@@ -280,7 +263,7 @@ class MainActivity : ComponentActivity() {
             if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
                 Toast.makeText(applicationContext, "Granted", Toast.LENGTH_SHORT).show()
-                getCurrentLocation()
+                updateCurrentLocation()
             }
             else
             {

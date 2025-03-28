@@ -1,6 +1,5 @@
 package com.example.location_aware_personal_organizer.ui.dashboard
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -56,6 +55,7 @@ fun DashboardScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         taskViewModel.fetchTasks() // Fetch tasks when screen loads
     }
+
     var menuExpanded by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
