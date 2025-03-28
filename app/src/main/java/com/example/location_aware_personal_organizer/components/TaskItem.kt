@@ -21,7 +21,11 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun TaskItem(task: Task, onTaskDeleted: () -> Unit) {
+fun TaskItem(
+    task: Task,
+    onTaskDeleted: () -> Unit,
+    onMarkedCompleted: () -> Unit
+) {
     val coroutineScope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) } // Track if the dialog is open
 
@@ -34,19 +38,32 @@ fun TaskItem(task: Task, onTaskDeleted: () -> Unit) {
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
 
-            // Delete Task Button at the Top Right
-            IconButton(
-                onClick = { showDialog = true },
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete Task",
-                    tint = MaterialTheme.colorScheme.error
+                IconButton(
+                    onClick = { showDialog = true },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete Task",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+                Checkbox(
+                    checked = task.complete,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp),
+                    onCheckedChange = {
+                        if (!task.complete) {
+                            coroutineScope.launch {
+                                TaskService.markTaskAsCompleted(task.id!!) // Update in Firestore
+                                onMarkedCompleted() // Navigate to Completed Tasks screen
+                            }
+                        }
+                    }
                 )
-            }
 
             Column(
                 modifier = Modifier.padding(16.dp)

@@ -6,5 +6,6 @@ sealed class Screen(val route: String) {
     object Dashboard : Screen("dashboard")
     object TaskCreation : Screen("task_creation")
     object NotificationSettings : Screen("notification_settings")
+    object CompletedTasks : Screen("completed_tasks")
 
 }

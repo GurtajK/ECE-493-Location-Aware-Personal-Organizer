@@ -109,4 +109,9 @@ object TaskService {
             Log.e("TaskService", "Error deleting task", e)
         }
     }
+
+    fun markTaskAsCompleted(taskId: String) {
+        val taskRef = Firebase.firestore.collection("tasks").document(taskId)
+        taskRef.update("complete", true)
+    }
 }
