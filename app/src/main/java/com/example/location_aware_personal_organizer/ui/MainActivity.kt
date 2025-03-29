@@ -121,13 +121,19 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.navigation.navArgument
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.location_aware_personal_organizer.ui.completedTasks.CompletedTasksScreen
+import com.example.location_aware_personal_organizer.utils.TaskDeadlineReminder
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import java.util.concurrent.TimeUnit
 import kotlin.properties.Delegates
 
 class MainActivity : ComponentActivity() {
@@ -141,6 +147,7 @@ class MainActivity : ComponentActivity() {
         Authorization.getInstance();
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+//        scheduleTaskDeadlineReminder(applicationContext)
 
         // Retrieve API key securely from the manifest
         val ai: ApplicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
@@ -149,6 +156,7 @@ class MainActivity : ComponentActivity() {
         if (!Places.isInitialized() && apiKey != null) {
             Places.initializeWithNewPlacesApiEnabled(applicationContext, apiKey);
         }
+
         setContent {
             AppTheme {
                 Surface(
@@ -250,13 +258,13 @@ class MainActivity : ComponentActivity() {
     private fun isLocationEnabled(): Boolean{
         val locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-        locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
     private fun requestPermission() {
         ActivityCompat.requestPermissions(
-     this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION),
+            this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                android.Manifest.permission.ACCESS_FINE_LOCATION),
             PERMISSION_REQUEST_ACCESS_LOCATION
         )
     }
@@ -268,9 +276,9 @@ class MainActivity : ComponentActivity() {
 
     private fun checkPermissions(): Boolean {
         if(ActivityCompat.checkSelfPermission(this,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                android.Manifest.permission.ACCESS_COARSE_LOCATION)
             ==PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-            android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+                android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
         {
             return true
         }
@@ -299,4 +307,21 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+fun scheduleTaskDeadlineReminder(context: Context) {
+    // Run immediately once
+    val immediateWork = OneTimeWorkRequestBuilder<TaskDeadlineReminder>().build()
+    WorkManager.getInstance(context).enqueue(immediateWork)
+
+    // Then every 15 minutes
+    val periodicWork = PeriodicWorkRequestBuilder<TaskDeadlineReminder>(
+        1, TimeUnit.MINUTES
+    ).build()
+
+    WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+        "task_deadline_reminder",
+        ExistingPeriodicWorkPolicy.KEEP,
+        periodicWork
+    )
 }

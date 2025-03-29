@@ -28,34 +28,36 @@ fun NotificationSettingsScreen(
 ) {
     val context = LocalContext.current
     val isPermissionGranted by viewModel.isPermissionGranted.collectAsState()
+    val timeEnabled by viewModel.timeNotificationEnabled.collectAsState()
+    val priorityEnabled by viewModel.priorityNotificationEnabled.collectAsState()
 
-    // Permission request launcher
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { granted ->
         viewModel.updatePermissionStatus(granted)
-        if (granted) {
-            Toast.makeText(context, "Notification permission granted!", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "Permission denied!", Toast.LENGTH_SHORT).show()
-        }
+        Toast.makeText(
+            context,
+            if (granted) "Notification permission granted!" else "Permission denied!",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.Start
     ) {
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Back Button to Dashboard
         Row(
-            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = { navController.navigateUp() }) {
-                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back"
+                )
             }
             Text(
                 text = "Notification Settings",
@@ -64,45 +66,41 @@ fun NotificationSettingsScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
-        // Display notification status
-        Text(text = if (isPermissionGranted) "Notifications: ON" else "Notifications: OFF")
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // Toggle Switch
-        Switch(
-            checked = isPermissionGranted,
-            onCheckedChange = { isChecked ->
-                if (isChecked) {
-                    if (!isPermissionGranted) {
-                        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                    }
-                } else {
-                    // Open App Settings (User must disable notifications manually)
-                    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-                        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-                    }
-                    context.startActivity(intent)
-                }
+        if (!isPermissionGranted) {
+            Text("To enable notifications, grant system-level permission below:")
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(onClick = {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }) {
+                Text("Enable Notification Permission")
             }
-        )
+        } else {
+            Text("Enable Time Notifications (before deadline)")
+            Switch(
+                checked = timeEnabled,
+                onCheckedChange = { viewModel.toggleTimeNotification(it) }
+            )
 
-        Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-        //  Send Test Notification Button
-        Button(onClick = {
-            if (isPermissionGranted) {
+            Text("Enable Prioritized Task Notifications")
+            Switch(
+                checked = priorityEnabled,
+                onCheckedChange = { viewModel.togglePriorityNotification(it) }
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Button(onClick = {
                 NotificationHelper(context).sendNotification(
                     title = "Test Notification",
                     message = "This is a test notification from your app!"
                 )
-            } else {
-                Toast.makeText(context, "Please enable notifications first", Toast.LENGTH_SHORT).show()
+            }) {
+                Text("Send Test Notification")
             }
-        }) {
-            Text("Send Test Notification")
         }
     }
 }
