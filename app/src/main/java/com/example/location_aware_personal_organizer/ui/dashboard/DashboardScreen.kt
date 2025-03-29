@@ -1,6 +1,5 @@
 package com.example.location_aware_personal_organizer.ui.dashboard
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,11 +8,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -44,6 +52,8 @@ import com.example.location_aware_personal_organizer.ui.components.TaskItem
 import com.example.location_aware_personal_organizer.ui.theme.AppTypography
 import com.example.location_aware_personal_organizer.viewmodels.TaskViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,6 +62,26 @@ fun DashboardScreen(navController: NavController) {
     val tasks by taskViewModel.tasks.collectAsStateWithLifecycle() // Observe tasks
     val snackbarHostState = remember { SnackbarHostState() } // Snackbar state
     val coroutineScope = rememberCoroutineScope() // CoroutineScope to show Snackbar
+    var searchQuery by remember { mutableStateOf("") }
+    var isFilterDialogOpen by remember { mutableStateOf(false) }
+    var locationFilter by remember { mutableStateOf("") }
+    var deadlineFilter by remember { mutableStateOf<LocalDate?>(null) }
+
+    val filteredTasks = tasks.filter { task ->
+        val matchesQuery = searchQuery.isBlank() || task.title.contains(searchQuery, ignoreCase = true) ||
+                task.description.contains(searchQuery, ignoreCase = true)
+
+        val matchesLocation =
+            locationFilter.isBlank() || task.locationName.contains(locationFilter, ignoreCase = true)
+
+        val matchesDeadline = deadlineFilter == null || task.deadline?.toDate()
+            ?.toInstant()
+            ?.atZone(ZoneId.systemDefault())
+            ?.toLocalDate() == deadlineFilter
+
+        matchesQuery && matchesLocation && matchesDeadline
+    }
+
 
     LaunchedEffect(Unit) {
         taskViewModel.fetchTasks() // Fetch tasks when screen loads
@@ -65,6 +95,10 @@ fun DashboardScreen(navController: NavController) {
                     TextButton(onClick = { menuExpanded = !menuExpanded }) {
                         Text(Authorization.getUsername())
                     }
+                    IconButton(onClick = { isFilterDialogOpen = true }) {
+                        Icon(Icons.Filled.FilterList, contentDescription = "Search/Filter Tasks")
+                    }
+
                     DropdownMenu(
                         expanded = menuExpanded,
                         onDismissRequest = { menuExpanded = false }
@@ -81,6 +115,7 @@ fun DashboardScreen(navController: NavController) {
                             onClick = { menuExpanded = false; Authorization.logout { navController.navigate(Screen.Login.route) } }
                         )
                     }
+
                 }
             )
         },
@@ -111,9 +146,35 @@ fun DashboardScreen(navController: NavController) {
                 Column(
                     modifier = Modifier.weight(1f) // Ensures list takes available space but doesn't push button away
                 ) {
-                    if (tasks.isEmpty()) {
+
+                    // Search Bar
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        label = { Text("Search tasks by title/description") },
+                        leadingIcon = {
+                            Icon(Icons.Default.Search, contentDescription = "Search Icon")
+                        },
+                        trailingIcon = {
+                            if (searchQuery.isNotEmpty()) {
+                                IconButton(onClick = { searchQuery = "" }) {
+                                    Icon(Icons.Default.Close, contentDescription = "Clear Search")
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
+                        shape = RoundedCornerShape(50),
+                        singleLine = true,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                            focusedBorderColor = MaterialTheme.colorScheme.primary
+                        )
+                    )
+                    if (filteredTasks.isEmpty()) {
                         Text(
-                            text = "No tasks available.",
+                            text = "No matching tasks found.",
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -121,7 +182,7 @@ fun DashboardScreen(navController: NavController) {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            items(tasks) { task ->
+                            items(filteredTasks) { task ->
                                 TaskItem(
                                     task = task, // Display each task
                                     onTaskDeleted = {
@@ -132,6 +193,10 @@ fun DashboardScreen(navController: NavController) {
                                                 duration = SnackbarDuration.Short
                                             )
                                         }
+                                    },
+                                    onMarkedCompleted = {
+                                        // Navigate to the Completed Tasks screen
+                                        navController.navigate(Screen.CompletedTasks.withTaskCompletedFlag())
                                     }
                                 )
                             }
@@ -151,6 +216,18 @@ fun DashboardScreen(navController: NavController) {
             }
         }
     }
+    if (isFilterDialogOpen) {
+        FilterDialog(
+            initialLocation = locationFilter,
+            initialDeadline = deadlineFilter,
+            onApplyFilters = {location, deadline ->
+                locationFilter = location
+                deadlineFilter = deadline
+            },
+            onDismiss = { isFilterDialogOpen = false }
+        )
+    }
+
 }
 
 

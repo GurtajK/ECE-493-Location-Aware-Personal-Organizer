@@ -30,19 +30,21 @@ fun PasswordInput(
     errorMessage: String = ""
 ) {
     var showPassword by rememberSaveable { mutableStateOf(false) };
-    var valid by rememberSaveable { mutableStateOf(true) };
+    var valid by rememberSaveable { mutableStateOf(false) };
     TextField(
         password,
         onValueChange = {
             onPasswordChange(it);
-            valid = validate(it) || it.isEmpty();
+            valid = validate(it);
         },
         label = { Text(label) },
         singleLine = true,
         supportingText = {
             if (!valid)
                 Text(
-                    modifier = Modifier.fillMaxWidth().padding(all = 0.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(all = 0.dp),
                     text = errorMessage,
                     color = errorLight
                 )
