@@ -11,6 +11,7 @@ import com.example.location_aware_personal_organizer.R
 import com.example.location_aware_personal_organizer.data.Task
 import com.example.location_aware_personal_organizer.ui.notifyPreference.NotificationPreferencesManager
 import com.example.location_aware_personal_organizer.utils.TaskDeadlineReminderReceiver
+import com.example.location_aware_personal_organizer.utils.TaskDeadlineReminderReceiver.Companion.scheduleTaskNotification
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -71,7 +72,7 @@ object TaskService {
                 .addOnSuccessListener { documentRef ->
                     Log.d("TaskService", "Task successfully added: ${documentRef.id}")
 
-                    // Schedule notificatio
+                    // Schedule notification
                     if (timeEnabled) {
                         val notifyAtMillis = Calendar.getInstance().apply {
                             time = deadline
@@ -148,35 +149,4 @@ object TaskService {
         val taskRef = Firebase.firestore.collection("tasks").document(taskId)
         taskRef.update("complete", false)
     }
-
-    @SuppressLint("ScheduleExactAlarm")
-    fun scheduleTaskNotification(
-        context: Context,
-        taskId: String,
-        notifyAtMillis: Long,
-        taskTitle: String,
-        deadline: Date
-    ) {
-        val formattedTime = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(deadline)
-
-        val intent = Intent(context, TaskDeadlineReminderReceiver::class.java).apply {
-            putExtra("title", taskTitle)
-            putExtra("deadline", formattedTime)
-        }
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            taskId.hashCode(),
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            notifyAtMillis,
-            pendingIntent
-        )
-    }
-
 }

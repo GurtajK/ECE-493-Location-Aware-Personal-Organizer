@@ -24,5 +24,36 @@ class TaskDeadlineReminderReceiver : BroadcastReceiver() {
             message = message
         )
     }
+    companion object {
+        @SuppressLint("ScheduleExactAlarm")
+        fun scheduleTaskNotification(
+            context: Context,
+            taskId: String,
+            notifyAtMillis: Long,
+            taskTitle: String,
+            deadline: Date
+        ) {
+            val formattedTime = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(deadline)
+
+            val intent = Intent(context, TaskDeadlineReminderReceiver::class.java).apply {
+                putExtra("title", taskTitle)
+                putExtra("deadline", formattedTime)
+            }
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                taskId.hashCode(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                notifyAtMillis,
+                pendingIntent
+            )
+        }
+    }
 
 }
