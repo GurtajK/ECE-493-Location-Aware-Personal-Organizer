@@ -107,7 +107,7 @@ fun LoginScreen(navController: NavController) {
                     modifier = Modifier.fillMaxColumnWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    TextButton(onClick = {}, modifier = Modifier.padding(vertical = 0.dp)) {
+                    TextButton(onClick = { navController.navigate(Screen.ForgotPassword.route)}, modifier = Modifier.padding(vertical = 0.dp)) {
                         Text(
                             stringResource(R.string.forgot_password),
                             modifier = Modifier.padding(vertical = 0.dp)
