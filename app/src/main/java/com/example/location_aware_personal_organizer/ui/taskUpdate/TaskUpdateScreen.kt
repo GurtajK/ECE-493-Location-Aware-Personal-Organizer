@@ -191,25 +191,29 @@ fun TaskUpdateScreen(
                                 set(Calendar.MILLISECOND, 0)
                             }.time
 
-//                            scope.launch {
-//                                TaskService.updateTask(
-//                                    taskId = originalTask.id!!,
-//                                    title = taskName,
-//                                    description = taskDescription,
-//                                    deadline = finalDeadline,
-//                                    location = taskGeoPoint,
-//                                    locationName = taskLocation,
-//                                    notify = timeToNotify,
-//                                    context = context,
-//                                    onSuccess = {
-//                                        snackbarHostState.showSnackbar("Task updated successfully")
-//                                        navController.popBackStack()
-//                                    },
-//                                    onFailure = {
-//                                        snackbarHostState.showSnackbar("Update failed: ${it.message}")
-//                                    }
-//                                )
-//                            }
+                            scope.launch {
+                                TaskService.updateTask(
+                                    taskId = originalTask.id!!,
+                                    title = taskName,
+                                    description = taskDescription,
+                                    deadline = finalDeadline,
+                                    location = taskGeoPoint,
+                                    locationName = taskLocation,
+                                    notify = timeToNotify,
+                                    context = context,
+                                    onSuccess = {
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar("Task updated successfully")
+                                            navController.popBackStack()
+                                        }
+                                    },
+                                    onFailure = {
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar("Update failed: ${it.message}")
+                                        }
+                                    }
+                                )
+                            }
                         } else {
                             scope.launch {
                                 snackbarHostState.showSnackbar("Please fill in all required fields")
@@ -283,18 +287,18 @@ fun TaskUpdateScreen(
                 confirmButton = {
                     TextButton(onClick = {
                         showTimePicker = false
+
                         selectedHour = timePickerState.hour
                         selectedMinute = timePickerState.minute
 
                         val calendar = Calendar.getInstance()
-                        selectedDate?.let {
-                            calendar.timeInMillis = it
-                            calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
-                            calendar.set(Calendar.MINUTE, selectedMinute)
-                            calendar.set(Calendar.SECOND, 0)
-                            calendar.set(Calendar.MILLISECOND, 0)
-                            taskDeadline = calendar.time
-                        }
+                        calendar.timeInMillis = selectedDate ?: System.currentTimeMillis()
+                        calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+                        calendar.set(Calendar.MINUTE, selectedMinute)
+                        calendar.set(Calendar.SECOND, 0)
+                        calendar.set(Calendar.MILLISECOND, 0)
+
+                        taskDeadline = calendar.time
                         isTaskDeadlineError = false
                     }) {
                         Text("OK")
