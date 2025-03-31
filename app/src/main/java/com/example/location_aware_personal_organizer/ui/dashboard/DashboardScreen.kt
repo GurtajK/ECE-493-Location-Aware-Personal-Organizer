@@ -80,7 +80,8 @@ fun DashboardScreen(navController: NavController) {
             ?.toLocalDate() == deadlineFilter
 
         matchesQuery && matchesLocation && matchesDeadline
-    }
+    // on the main task dashboard, we should order it by priority (descending)
+    } .sortedBy { it.priority }
 
 
     LaunchedEffect(Unit) {

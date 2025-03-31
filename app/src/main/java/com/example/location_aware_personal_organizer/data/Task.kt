@@ -16,8 +16,8 @@ data class Task(
     val user: String = "",
 
     // default to not being prioritized (i.e. above the threshold)
-    var distance_priority : Double = Double.MAX_VALUE,
-    var time_priority : Double = Double.MAX_VALUE,
+    var distancePriority : Double = Double.MAX_VALUE,
+    var timePriority : Double = Double.MAX_VALUE,
     var priority: Double = Double.MAX_VALUE,
     var distance: Double = Double.MAX_VALUE,
 )
