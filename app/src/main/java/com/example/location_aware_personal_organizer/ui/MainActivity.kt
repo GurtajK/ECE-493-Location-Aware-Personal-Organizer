@@ -128,14 +128,13 @@ import androidx.work.WorkManager
 import com.example.location_aware_personal_organizer.ui.completedTasks.CompletedTasksScreen
 import com.example.location_aware_personal_organizer.ui.taskUpdate.TaskUpdateScreen
 import com.example.location_aware_personal_organizer.utils.TaskDeadlineReminder
-import com.example.location_aware_personal_organizer.services.Location
+import com.example.location_aware_personal_organizer.utils.LocationHelper
 import com.example.location_aware_personal_organizer.services.PriorityService
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import java.util.concurrent.TimeUnit
-import kotlin.properties.Delegates
 
 class MainActivity : ComponentActivity() {
     private val auth: FirebaseAuth = Firebase.auth
@@ -143,7 +142,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         Authorization.getInstance()
         PriorityService.getInstance()
-        Location.getInstance()
+        LocationHelper.getInstance()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 //        scheduleTaskDeadlineReminder(applicationContext)
@@ -156,7 +155,7 @@ class MainActivity : ComponentActivity() {
             Places.initializeWithNewPlacesApiEnabled(applicationContext, apiKey)
         }
 
-        Location.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        LocationHelper.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         updateCurrentLocation()
 
         setContent {
@@ -192,9 +191,7 @@ class MainActivity : ComponentActivity() {
                             val taskId = backStackEntry.arguments?.getString("id") ?: ""
                             TaskUpdateScreen(
                                 navController = navController,
-                                taskId = taskId,
-                                latitude = latitude,
-                                longitude = longitude
+                                taskId = taskId
                             )
                         }
                         composable(
@@ -231,14 +228,14 @@ class MainActivity : ComponentActivity() {
                     return
                 }
 
-                Location.fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->
+                LocationHelper.fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->
                     val location: Location? = task.result
                     if (location == null) {
                         Toast.makeText(this, "Null Received", Toast.LENGTH_SHORT).show()
                     }
                     else {
                         Toast.makeText(this, "Get Success", Toast.LENGTH_SHORT).show()
-                        Location.setLocation(location.latitude, location.longitude)
+                        LocationHelper.setLocation(location.latitude, location.longitude)
                     }
                 }
             }

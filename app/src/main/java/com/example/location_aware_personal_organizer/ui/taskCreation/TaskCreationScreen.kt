@@ -42,7 +42,7 @@ import androidx.navigation.NavController
 import com.example.location_aware_personal_organizer.R
 import com.example.location_aware_personal_organizer.data.LocationSuggestion
 import com.example.location_aware_personal_organizer.services.TaskService
-import com.example.location_aware_personal_organizer.utils.fetchLocationSuggestions
+import com.example.location_aware_personal_organizer.utils.LocationHelper
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
@@ -181,7 +181,7 @@ fun TaskCreationScreen(navController: NavController) {
                 },
                 onFetchSuggestions = { query ->
                     coroutineScope.launch {
-                        fetchLocationSuggestions(query, placesClient) { suggestions ->
+                        LocationHelper.fetchLocationSuggestions(query, placesClient) { suggestions ->
                             locationSuggestions = suggestions
                         }
                     }

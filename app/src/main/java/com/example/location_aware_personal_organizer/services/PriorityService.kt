@@ -2,6 +2,7 @@ package com.example.location_aware_personal_organizer.services
 
 import android.util.Log
 import com.example.location_aware_personal_organizer.data.Task
+import com.example.location_aware_personal_organizer.utils.LocationHelper
 import com.google.firebase.Timestamp
 import kotlin.math.asin
 import kotlin.math.cos
@@ -53,8 +54,8 @@ class PriorityService private constructor() {
             if (it.location == null) {
                 return Double.MAX_VALUE
             }
-            val lat1 = Math.toRadians(Location.latitude)
-            val lon1 = Math.toRadians(Location.longitude)
+            val lat1 = Math.toRadians(LocationHelper.latitude)
+            val lon1 = Math.toRadians(LocationHelper.longitude)
             val lat2 = Math.toRadians(it.location.latitude)
             val lon2 = Math.toRadians(it.location.longitude)
             val lat = lat2 - lat1
