@@ -73,7 +73,7 @@ fun TaskUpdateScreen(
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
-                TopAppBar(title = { Text("Update Task") })
+                TopAppBar(title = { Text("Edit Task") })
             }
         ) { innerPadding ->
             Column(

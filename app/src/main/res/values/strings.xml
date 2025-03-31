@@ -28,7 +28,7 @@
     <string name="minutes">minutes</string>
     <string name="select_date_time">Please select a date and time</string>
     <string name="task_deadline_required">Task Deadline is required</string>
-    <string name="create_task">Create Task</string>
+    <string name="create_task">Task Create</string>
     <string name="task_name">Task Name</string>
     <string name="task_description">Task Description</string>
     <string name="task_created_successfully">Task Created Successfully</string>
