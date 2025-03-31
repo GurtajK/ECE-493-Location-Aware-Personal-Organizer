@@ -149,4 +149,24 @@ object TaskService {
         val taskRef = Firebase.firestore.collection("tasks").document(taskId)
         taskRef.update("complete", false)
     }
+
+    fun updateTask() {
+
+    }
+
+    suspend fun getTaskById(taskId: String): Task? {
+        return try {
+            val document = FirebaseFirestore.getInstance()
+                .collection("tasks")
+                .document(taskId)
+                .get()
+                .await()
+
+            document.toObject(Task::class.java)?.copy(id = document.id)
+        } catch (e: Exception) {
+            Log.e("TaskService", "Error fetching task by ID", e)
+            null
+        }
+    }
+
 }
