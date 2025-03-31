@@ -115,6 +115,7 @@ import com.example.location_aware_personal_organizer.ui.theme.AppTheme
 import com.google.android.libraries.places.api.Places
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.location.Location
 import android.location.LocationManager
 import android.provider.Settings
 import android.util.Log
@@ -126,6 +127,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.location_aware_personal_organizer.ui.completedTasks.CompletedTasksScreen
+import com.example.location_aware_personal_organizer.ui.taskUpdate.TaskUpdateScreen
 import com.example.location_aware_personal_organizer.utils.TaskDeadlineReminder
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -184,6 +186,18 @@ class MainActivity : ComponentActivity() {
                             NotificationSettingsScreen(navController)
                         }
                         composable(
+                            route = "task_update?id={id}",
+                            arguments = listOf(navArgument("id") { defaultValue = "" })
+                        ) { backStackEntry ->
+                            val taskId = backStackEntry.arguments?.getString("id") ?: ""
+                            TaskUpdateScreen(
+                                navController = navController,
+                                taskId = taskId,
+                                latitude = latitude,
+                                longitude = longitude
+                            )
+                        }
+                        composable(
                             route = "completed_tasks?taskCompleted={taskCompleted}",
                             arguments = listOf(navArgument("taskCompleted") {
                                 defaultValue = "false"
@@ -223,7 +237,7 @@ class MainActivity : ComponentActivity() {
                     return
                 }
                 fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->
-                    val location: android.location.Location? = task.result
+                    val location: Location? = task.result
                     if (location == null) {
                         Toast.makeText(this, "Null Received", Toast.LENGTH_SHORT).show()
                     }
@@ -256,15 +270,16 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun isLocationEnabled(): Boolean{
-        val locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val locationManager: LocationManager = getSystemService(LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
     private fun requestPermission() {
         ActivityCompat.requestPermissions(
-            this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                android.Manifest.permission.ACCESS_FINE_LOCATION),
+            this, arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION),
             PERMISSION_REQUEST_ACCESS_LOCATION
         )
     }
@@ -276,9 +291,9 @@ class MainActivity : ComponentActivity() {
 
     private fun checkPermissions(): Boolean {
         if(ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                Manifest.permission.ACCESS_COARSE_LOCATION)
             ==PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
         {
             return true
         }

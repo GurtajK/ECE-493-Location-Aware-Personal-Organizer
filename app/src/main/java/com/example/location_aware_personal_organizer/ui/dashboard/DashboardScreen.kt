@@ -194,10 +194,15 @@ fun DashboardScreen(navController: NavController) {
                                             )
                                         }
                                     },
+
                                     onMarkedCompleted = {
                                         // Navigate to the Completed Tasks screen
                                         navController.navigate(Screen.CompletedTasks.withTaskCompletedFlag())
+                                    },
+                                    onClick = {
+                                        navController.navigate("task_update?id=${task.id}") // 🔥 This navigates to update screen
                                     }
+
                                 )
                             }
                         }

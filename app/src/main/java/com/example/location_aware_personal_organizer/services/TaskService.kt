@@ -72,12 +72,18 @@ object TaskService {
                 .addOnSuccessListener { documentRef ->
                     Log.d("TaskService", "Task successfully added: ${documentRef.id}")
 
-                    // Schedule notification
                     if (timeEnabled) {
+//                        val notifyAtMillis = Calendar.getInstance().apply {
+//                            time = deadline
+//                            add(Calendar.MINUTE, -notify)
+//                        }.timeInMillis
                         val notifyAtMillis = Calendar.getInstance().apply {
                             time = deadline
+                            set(Calendar.SECOND, 0)
+                            set(Calendar.MILLISECOND, 0)
                             add(Calendar.MINUTE, -notify)
                         }.timeInMillis
+
 
                         scheduleTaskNotification(
                             context = context,
@@ -148,5 +154,79 @@ object TaskService {
     fun markTaskAsIncomplete(taskId: String) {
         val taskRef = Firebase.firestore.collection("tasks").document(taskId)
         taskRef.update("complete", false)
+    }
+
+    fun updateTask(
+        taskId: String,
+        title: String,
+        description: String,
+        deadline: Date,
+        location: GeoPoint?,
+        locationName: String,
+        notify: Int,
+        context: Context,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val taskRef = db.collection("tasks").document(taskId)
+        taskRef.update(
+            mapOf(
+                "title" to title,
+                "description" to description,
+                "deadline" to com.google.firebase.Timestamp(deadline),
+                "location" to location,
+                "locationName" to locationName,
+                "notify" to notify
+            )
+        ).addOnSuccessListener {
+            Log.d("TaskService", "Task updated: $taskId")
+
+            // Cancel previous alarm
+            val intent = Intent(context, TaskDeadlineReminderReceiver::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                taskId.hashCode(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.cancel(pendingIntent)
+
+            // Reschedule notification if enabled
+            val notifyAtMillis = Calendar.getInstance().apply {
+                time = deadline
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+                add(Calendar.MINUTE, -notify)
+            }.timeInMillis
+
+            scheduleTaskNotification(
+                context = context,
+                taskId = taskId,
+                notifyAtMillis = notifyAtMillis,
+                taskTitle = title,
+                deadline = deadline
+            )
+
+            onSuccess()
+        }.addOnFailureListener { e ->
+            Log.e("TaskService", "Error updating task", e)
+            onFailure(e)
+        }
+    }
+
+    suspend fun getTaskById(taskId: String): Task? {
+        return try {
+            val document = FirebaseFirestore.getInstance()
+                .collection("tasks")
+                .document(taskId)
+                .get()
+                .await()
+
+            document.toObject(Task::class.java)?.copy(id = document.id)
+        } catch (e: Exception) {
+            Log.e("TaskService", "Error fetching task by ID", e)
+            null
+        }
     }
 }

@@ -1,17 +1,13 @@
 package com.example.location_aware_personal_organizer.ui.components
 
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -25,71 +21,67 @@ import java.util.Locale
 fun TaskItem(
     task: Task,
     onTaskDeleted: () -> Unit,
-    onMarkedCompleted: () -> Unit
+    onMarkedCompleted: () -> Unit,
+    onClick: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-    var showDialog by remember { mutableStateOf(false) } // Track if the dialog is open
+    var showDialog by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
 
-                IconButton(
-                    onClick = { showDialog = true },
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete Task",
-                        tint = MaterialTheme.colorScheme.error
-                    )
-                }
-                Checkbox(
-                    checked = task.complete,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(8.dp),
-                    onCheckedChange = {
-                        if (!task.complete) {
-                            coroutineScope.launch {
-                                TaskService.markTaskAsCompleted(task.id!!) // Update in Firestore
-                                onMarkedCompleted() // Navigate to Completed Tasks screen
-                            }
+            IconButton(
+                onClick = { showDialog = true },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete Task",
+                    tint = MaterialTheme.colorScheme.error
+                )
+            }
+
+            Checkbox(
+                checked = task.complete,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp),
+                onCheckedChange = {
+                    if (!task.complete) {
+                        coroutineScope.launch {
+                            TaskService.markTaskAsCompleted(task.id!!)
+                            onMarkedCompleted()
                         }
                     }
-                )
+                }
+            )
 
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
-                // Task Title
                 Text(task.title, style = MaterialTheme.typography.titleMedium)
 
-                // Task Description
                 if (task.description.isNotBlank()) {
                     Text(task.description, style = MaterialTheme.typography.bodyMedium)
                 }
 
-                // Task Deadline
                 task.deadline?.toDate()?.let { deadlineDate ->
                     val formattedDate =
-                        SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(
-                            deadlineDate
-                        )
+                        SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(deadlineDate)
                     Text("Due: $formattedDate", style = MaterialTheme.typography.bodySmall)
                 }
 
-                // Task Location (Stored as GeoPoint in Firestore)
                 Text("Location: ${task.locationName}", style = MaterialTheme.typography.bodySmall)
 
-                // Task Notification Time (Time to Notify)
                 if (task.notify > 0) {
                     Text(
                         "Notify: ${task.notify} minutes before deadline",
@@ -99,13 +91,11 @@ fun TaskItem(
                     Text("Notify: No reminders set", style = MaterialTheme.typography.bodySmall)
                 }
 
-                // Task Completion Status
                 Text(
                     text = if (task.complete) "Status: Completed" else "Status: Pending",
                     style = MaterialTheme.typography.bodySmall
                 )
 
-                // Delete Confirmation Dialog
                 if (showDialog) {
                     AlertDialog(
                         onDismissRequest = { showDialog = false },
@@ -115,9 +105,9 @@ fun TaskItem(
                             TextButton(
                                 onClick = {
                                     coroutineScope.launch {
-                                        TaskService.deleteTask(task.id!!) // Delete task from Firestore
+                                        TaskService.deleteTask(task.id!!)
                                         showDialog = false
-                                        onTaskDeleted() // Refresh UI
+                                        onTaskDeleted()
                                     }
                                 }
                             ) {

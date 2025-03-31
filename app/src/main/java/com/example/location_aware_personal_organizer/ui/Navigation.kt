@@ -9,6 +9,7 @@ sealed class Screen(val route: String) {
     object CompletedTasks : Screen("completed_tasks") {
         fun withTaskCompletedFlag() = "completed_tasks?taskCompleted=true"
     }
-
-
+    object TaskUpdate : Screen("task_update") {
+        fun withId(id: String) = "task_update?id=$id"
+    }
 }
