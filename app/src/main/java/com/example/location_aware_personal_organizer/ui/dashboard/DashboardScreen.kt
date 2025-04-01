@@ -77,7 +77,7 @@ fun DashboardScreen(navController: NavController) {
     // start the priority service job schedule
     val jobInfo = JobInfo
         .Builder(1, ComponentName(LocalContext.current, PriorityService::class.java))
-        .setPeriodic(15*60*1000)
+        .setPeriodic(30*60*1000)
 
     val jobScheduler = LocalContext.current.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
     jobScheduler.schedule(jobInfo.build())
