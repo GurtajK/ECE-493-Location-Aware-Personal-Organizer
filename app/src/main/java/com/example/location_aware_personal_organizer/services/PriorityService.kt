@@ -1,9 +1,26 @@
 package com.example.location_aware_personal_organizer.services
 
+import android.app.job.JobInfo
+import android.app.job.JobParameters
+import android.app.job.JobScheduler
+import android.app.job.JobService
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 import android.util.Log
+import androidx.work.Configuration
 import com.example.location_aware_personal_organizer.data.Task
 import com.example.location_aware_personal_organizer.utils.LocationHelper
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.Timestamp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.concurrent.ScheduledFuture
 import kotlin.math.asin
 import kotlin.math.cos
 import kotlin.math.max
@@ -12,7 +29,12 @@ import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-class PriorityService private constructor() {
+class PriorityService : JobService() {
+    init {
+        val builder: Configuration.Builder = Configuration.Builder()
+        builder.setJobSchedulerJobIdRange(0, 10)
+    }
+
     companion object {
         @Volatile
         private var instance: PriorityService? = null
@@ -23,7 +45,6 @@ class PriorityService private constructor() {
         private const val DT_RATIO = TIME_SCALE / DISTANCE_SCALE   // multiply all distances by this
         private const val PRIORITY_SCALE = TIME_SCALE + DISTANCE_SCALE*DT_RATIO    // approximate higher end of the spectrum for priorities
         private const val INDIVIDUAL_THRESHOLD = PRIORITY_SCALE*0.05f   // threshold for sending notifications (one fourth of the priority scale)
-
         // alternatively we might want to exponentially scale the priority value as location and time increases
         // i.e. (e^0.2x - 1) or something, this way for smaller distances the priority will be more similar but as distance
         // gets large it will have a more drastic effect on increasing priority
@@ -32,6 +53,7 @@ class PriorityService private constructor() {
         fun getInstance() : PriorityService {
             if (instance == null)
                 instance = PriorityService()
+
             return instance!!
         }
 
@@ -69,5 +91,41 @@ class PriorityService private constructor() {
                 )
             return distance
         }
+
+        private suspend fun reprioritizeAndNotify(context: Context) {
+            // if location is not initialized
+            if (!LocationHelper.initialized) {
+                LocationHelper.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+            }
+            var tasks = TaskService.getTasksForCurrentUser()
+
+            // always get an updated location
+            LocationHelper.updateCurrentLocation(context = context, successCallback = {
+                prioritizeTasks(tasks)
+                tasks = tasks.sortedBy { it.priority } .filter { !it.complete }
+                val title = tasks.first().title
+                val df = DecimalFormat("#0.00");
+                val distance = df.format(tasks.first().distance)
+                Log.d("bg job", "sending notification")
+
+                val deadline = SimpleDateFormat("MMM d h:mm a", Locale.getDefault()).format(tasks.first().deadline!!.toDate())
+                NotificationHelper(context).sendNotification("Prioritized Task", "$title is due on $deadline\n$distance km away")
+            })
+        }
+    }
+
+    override fun onStartJob(p0: JobParameters?): Boolean {
+        getInstance()
+        // begin background process updates
+        val context = this
+        Log.d("bg job", "background reprioritize started")
+        CoroutineScope(Job() + Dispatchers.Main).launch {
+            reprioritizeAndNotify(context)
+        }
+        return false
+    }
+
+    override fun onStopJob(p0: JobParameters?): Boolean {
+        return false
     }
 }
