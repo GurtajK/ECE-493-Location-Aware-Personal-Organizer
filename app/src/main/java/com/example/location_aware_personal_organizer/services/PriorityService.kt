@@ -20,7 +20,6 @@ import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.concurrent.ScheduledFuture
 import kotlin.math.asin
 import kotlin.math.cos
 import kotlin.math.max
@@ -32,7 +31,7 @@ import kotlin.math.sqrt
 class PriorityService : JobService() {
     init {
         val builder: Configuration.Builder = Configuration.Builder()
-        builder.setJobSchedulerJobIdRange(0, 10)
+        builder.setJobSchedulerJobIdRange(0, 1000)
     }
 
     companion object {
