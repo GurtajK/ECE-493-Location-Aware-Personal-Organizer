@@ -42,7 +42,7 @@ import androidx.navigation.NavController
 import com.example.location_aware_personal_organizer.R
 import com.example.location_aware_personal_organizer.data.LocationSuggestion
 import com.example.location_aware_personal_organizer.services.TaskService
-import com.example.location_aware_personal_organizer.utils.fetchLocationSuggestions
+import com.example.location_aware_personal_organizer.utils.LocationHelper
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
@@ -56,7 +56,7 @@ import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskCreationScreen(navController: NavController, latitude: Float, longitude: Float) {
+fun TaskCreationScreen(navController: NavController) {
 
     var taskName by remember { mutableStateOf("") }
     var taskDeadline by remember { mutableStateOf<Date?>(null) }
@@ -181,7 +181,7 @@ fun TaskCreationScreen(navController: NavController, latitude: Float, longitude:
                 },
                 onFetchSuggestions = { query ->
                     coroutineScope.launch {
-                        fetchLocationSuggestions(query, placesClient, latitude, longitude) { suggestions ->
+                        LocationHelper.fetchLocationSuggestions(query, placesClient) { suggestions ->
                             locationSuggestions = suggestions
                         }
                     }
@@ -223,7 +223,6 @@ fun TaskCreationScreen(navController: NavController, latitude: Float, longitude:
             // Create Task and Cancel Buttons
             Button(
                 onClick = {
-
                     if (taskName.isNotBlank() && taskDeadline != null && taskLocation.isNotBlank()) {
                         scope.launch {
                             TaskService.createTask(

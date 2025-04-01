@@ -79,13 +79,15 @@ fun DashboardScreen(navController: NavController) {
             ?.atZone(ZoneId.systemDefault())
             ?.toLocalDate() == deadlineFilter
 
-        !task.complete && matchesQuery && matchesLocation && matchesDeadline
-    }
 
+        !task.complete && matchesQuery && matchesLocation && matchesDeadline
+    // on the main task dashboard, we should order it by priority (descending)
+    } .sortedBy { it.priority }
 
     LaunchedEffect(Unit) {
         taskViewModel.fetchTasks() // Fetch tasks when screen loads
     }
+
     var menuExpanded by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
