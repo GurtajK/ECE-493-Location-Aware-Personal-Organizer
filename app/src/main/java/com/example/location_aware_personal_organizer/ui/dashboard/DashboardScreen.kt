@@ -79,7 +79,7 @@ fun DashboardScreen(navController: NavController) {
             ?.atZone(ZoneId.systemDefault())
             ?.toLocalDate() == deadlineFilter
 
-        matchesQuery && matchesLocation && matchesDeadline
+        !task.complete && matchesQuery && matchesLocation && matchesDeadline
     }
 
 
