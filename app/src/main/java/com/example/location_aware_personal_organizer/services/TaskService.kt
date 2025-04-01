@@ -200,13 +200,19 @@ object TaskService {
                 add(Calendar.MINUTE, -notify)
             }.timeInMillis
 
-            scheduleTaskNotification(
-                context = context,
-                taskId = taskId,
-                notifyAtMillis = notifyAtMillis,
-                taskTitle = title,
-                deadline = deadline
-            )
+            if (notifyAtMillis > Calendar.getInstance().timeInMillis) {
+                try {
+                    scheduleTaskNotification(
+                        context = context,
+                        taskId = taskId,
+                        notifyAtMillis = notifyAtMillis,
+                        taskTitle = title,
+                        deadline = deadline
+                    )
+                } catch (e: Exception) {
+                    Log.e("TaskService", "Error scheduling notification", e)
+                }
+            }
 
             onSuccess()
         }.addOnFailureListener { e ->
