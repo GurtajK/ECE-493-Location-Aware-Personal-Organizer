@@ -47,11 +47,6 @@ class PriorityService private constructor() {
                         min(task.timePriority, task.distancePriority) + 0.25* max(task.timePriority, task.distancePriority)
                     else task.timePriority + task.distancePriority
             }
-
-            val minprio = tasks.minOf { it.priority }
-            val maxprio = tasks.maxOf { it.priority }
-
-            Log.d("PriorityService", "Min priority: $minprio, Max priority: $maxprio")
         }
 
         private fun haversineDistance(it: Task) : Double {
