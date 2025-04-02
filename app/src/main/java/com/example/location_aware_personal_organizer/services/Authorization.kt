@@ -67,7 +67,19 @@ class Authorization private constructor() {
                                                     Log.e("Register", "Failed to set displayName", profileTask.exception)
                                                 }
                                             }
-
+                                        // Send email verification
+                                        firebaseUser?.sendEmailVerification()
+                                            ?.addOnCompleteListener { emailTask ->
+                                                if (emailTask.isSuccessful) {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Verification email sent to ${firebaseUser.email}",
+                                                        Toast.LENGTH_LONG
+                                                    ).show()
+                                                } else {
+                                                    Log.e("Register", "Failed to send verification email", emailTask.exception)
+                                                }
+                                            }
                                         // Store the user in Firestore
                                         val userdata = hashMapOf("email" to email);
                                         db.collection("users")
@@ -90,6 +102,8 @@ class Authorization private constructor() {
                                                     Toast.LENGTH_SHORT,
                                                 ).show()
                                             };
+
+
                                     } else {
                                         Log.w("Register", "User creation failed", task.exception)
                                         Toast.makeText(
