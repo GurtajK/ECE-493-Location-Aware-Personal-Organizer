@@ -102,13 +102,16 @@ class PriorityService : JobService() {
             LocationHelper.updateCurrentLocation(context = context, successCallback = {
                 prioritizeTasks(tasks)
                 tasks = tasks.sortedBy { it.priority } .filter { !it.complete }
-                val title = tasks.first().title
-                val df = DecimalFormat("#0.00");
-                val distance = df.format(tasks.first().distance)
-                Log.d("bg job", "sending notification")
 
-                val deadline = SimpleDateFormat("MMM d h:mm a", Locale.getDefault()).format(tasks.first().deadline!!.toDate())
-                NotificationHelper(context).sendNotification("Prioritized Task", "$title is due on $deadline\n$distance km away")
+                if (tasks.isNotEmpty()) {
+                    val title = tasks.first().title
+                    val df = DecimalFormat("#0.00");
+                    val distance = df.format(tasks.first().distance)
+                    Log.d("bg job", "sending notification")
+
+                    val deadline = SimpleDateFormat("MMM d h:mm a", Locale.getDefault()).format(tasks.first().deadline!!.toDate())
+                    NotificationHelper(context).sendNotification("Prioritized Task", "$title is due on $deadline\n$distance km away")
+                }
             })
         }
     }
