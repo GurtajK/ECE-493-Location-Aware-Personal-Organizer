@@ -75,7 +75,7 @@ fun ForgotPasswordScreen(navController: NavController) {
 
                                 if (!result.isEmpty) {
                                     snackbarHostState.showSnackbar("This email exists!")
-                                    // ✅ Email is registered → call Cloud Function to send OTP
+                                    // Email is registered → call Cloud Function to send OTP
 //                                    Firebase.functions
 //                                        .getHttpsCallable("checkEmailAndSendOtp")
 //                                        .call(mapOf("email" to email))
