@@ -30,7 +30,7 @@ fun PasswordInput(
     errorMessage: String = ""
 ) {
     var showPassword by rememberSaveable { mutableStateOf(false) };
-    var valid by rememberSaveable { mutableStateOf(false) };
+    var valid by rememberSaveable { mutableStateOf(validate(password)) };
     TextField(
         password,
         onValueChange = {

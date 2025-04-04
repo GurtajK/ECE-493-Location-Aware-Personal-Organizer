@@ -4,6 +4,7 @@ import android.app.job.JobInfo
 import android.app.job.JobScheduler
 import android.app.job.JobService.JOB_SCHEDULER_SERVICE
 import android.content.ComponentName
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -74,13 +75,19 @@ fun DashboardScreen(navController: NavController) {
     var locationFilter by remember { mutableStateOf("") }
     var deadlineFilter by remember { mutableStateOf<LocalDate?>(null) }
 
-    // start the priority service job schedule
-    val jobInfo = JobInfo
-        .Builder(1, ComponentName(LocalContext.current, PriorityService::class.java))
-        .setPeriodic(30*60*1000)
-
     val jobScheduler = LocalContext.current.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
-    jobScheduler.schedule(jobInfo.build())
+    var existingJob = jobScheduler.getPendingJob(1)
+
+    if (existingJob == null) {
+        // create a new job to run background prioritization every 30 minutes
+        val jobInfo = JobInfo
+            .Builder(1, ComponentName(LocalContext.current, PriorityService::class.java))
+            .setPeriodic(15 * 60 * 1000)
+
+        // start the priority service job schedule
+        jobScheduler.schedule(jobInfo.build())
+        Log.d("bg job", "schedule djob")
+    }
 
     val filteredTasks = tasks.filter { task ->
         val matchesQuery = searchQuery.isBlank() || task.title.contains(searchQuery, ignoreCase = true) ||

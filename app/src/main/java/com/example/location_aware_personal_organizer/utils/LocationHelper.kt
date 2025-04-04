@@ -123,7 +123,7 @@ class LocationHelper private constructor() {
                         }
                         else {
                             Log.d("bg location", "get success")
-                            Toast.makeText(context, "Get Success", Toast.LENGTH_SHORT).show()
+                            //Toast.makeText(context, "Get Success", Toast.LENGTH_SHORT).show()
                             setLocation(location.latitude, location.longitude)
                             successCallback()
                         }
