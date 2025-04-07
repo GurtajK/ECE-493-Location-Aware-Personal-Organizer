@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -88,6 +89,7 @@ fun TaskUpdateScreen(
                     label = { Text("Task Name") },
                     modifier = Modifier
                         .fillMaxWidth()
+                        .testTag("taskNameInput")
                         .padding(bottom = 8.dp),
                     isError = isTaskNameError,
                     supportingText = {
@@ -99,7 +101,7 @@ fun TaskUpdateScreen(
                     value = taskDescription,
                     onValueChange = { taskDescription = it },
                     label = { Text("Description") },
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp).testTag("descriptionInput")
                 )
 
                 OutlinedTextField(
@@ -115,7 +117,7 @@ fun TaskUpdateScreen(
                             contentDescription = null
                         )
                     },
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp).testTag("deadlineInput"),
                     interactionSource = interactionSource,
                     isError = isTaskDeadlineError,
                     supportingText = {

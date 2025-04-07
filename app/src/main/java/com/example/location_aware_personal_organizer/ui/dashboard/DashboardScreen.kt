@@ -161,11 +161,10 @@ fun DashboardScreen(navController: NavController) {
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(8.dp)) // Adds vertical spacing between column elements
+                Spacer(modifier = Modifier.height(8.dp))
 
-                // Wrap LazyColumn inside another Column with weight
                 Column(
-                    modifier = Modifier.weight(1f) // Ensures list takes available space but doesn't push button away
+                    modifier = Modifier.weight(1f)
                 ) {
 
                     // Search Bar
@@ -221,7 +220,7 @@ fun DashboardScreen(navController: NavController) {
                                         navController.navigate(Screen.CompletedTasks.withTaskCompletedFlag())
                                     },
                                     onClick = {
-                                        navController.navigate("task_update?id=${task.id}") // 🔥 This navigates to update screen
+                                        navController.navigate("task_update?id=${task.id}")
                                     }
 
                                 )
@@ -230,9 +229,8 @@ fun DashboardScreen(navController: NavController) {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp)) // Add spacing
+                Spacer(modifier = Modifier.height(16.dp))
 
-                // Place button outside LazyColumn so it stays at the bottom
                 CreateNewTaskButton(
                     navController = navController,
                     modifier = Modifier

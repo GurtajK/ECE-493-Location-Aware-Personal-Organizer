@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.example.location_aware_personal_organizer.data.Task
 import com.example.location_aware_personal_organizer.services.TaskService
@@ -31,6 +32,7 @@ fun TaskItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
+            .testTag("TaskItem")
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
