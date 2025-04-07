@@ -5,7 +5,7 @@ import org.junit.Test
 
 class AuthorizationLogicUnitTest {
 
-    // original Pattern only exist in android runtime, this is equuivalent in JVM
+    // original Pattern only exist in android runtime, this is equivalent in JVM
     fun isValidEmail(email: String): Boolean {
         val emailRegex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")
         return emailRegex.matches(email)

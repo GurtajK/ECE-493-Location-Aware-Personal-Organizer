@@ -50,6 +50,8 @@ dependencies {
 
     implementation(libs.androidx.runtime.android)
     implementation(libs.androidx.core)
+    implementation(libs.androidx.ui.test.junit4.android)
+    implementation(libs.androidx.navigation.testing)
     // Jetpack Compose
     val composeBom = platform("androidx.compose:compose-bom:2025.02.00")
     implementation(composeBom)
@@ -76,7 +78,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
     testImplementation("org.mockito:mockito-core:5.6.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
     testImplementation("org.jetbrains.kotlin:kotlin-reflect:1.9.22")
