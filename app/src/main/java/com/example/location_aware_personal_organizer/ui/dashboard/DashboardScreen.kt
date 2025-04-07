@@ -1,5 +1,10 @@
 package com.example.location_aware_personal_organizer.ui.dashboard
 
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.app.job.JobService.JOB_SCHEDULER_SERVICE
+import android.content.ComponentName
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,6 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -47,6 +53,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.location_aware_personal_organizer.R
 import com.example.location_aware_personal_organizer.services.Authorization
+import com.example.location_aware_personal_organizer.services.PriorityService
 import com.example.location_aware_personal_organizer.ui.Screen
 import com.example.location_aware_personal_organizer.ui.components.TaskItem
 import com.example.location_aware_personal_organizer.ui.theme.AppTypography
@@ -54,6 +61,7 @@ import com.example.location_aware_personal_organizer.viewmodels.TaskViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.ZoneId
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,6 +75,20 @@ fun DashboardScreen(navController: NavController) {
     var locationFilter by remember { mutableStateOf("") }
     var deadlineFilter by remember { mutableStateOf<LocalDate?>(null) }
 
+    val jobScheduler = LocalContext.current.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
+    var existingJob = jobScheduler.getPendingJob(1)
+
+    if (existingJob == null) {
+        // create a new job to run background prioritization every 30 minutes
+        val jobInfo = JobInfo
+            .Builder(1, ComponentName(LocalContext.current, PriorityService::class.java))
+            .setPeriodic(15 * 60 * 1000)
+
+        // start the priority service job schedule
+        jobScheduler.schedule(jobInfo.build())
+        Log.d("bg job", "schedule djob")
+    }
+
     val filteredTasks = tasks.filter { task ->
         val matchesQuery = searchQuery.isBlank() || task.title.contains(searchQuery, ignoreCase = true) ||
                 task.description.contains(searchQuery, ignoreCase = true)
@@ -79,13 +101,15 @@ fun DashboardScreen(navController: NavController) {
             ?.atZone(ZoneId.systemDefault())
             ?.toLocalDate() == deadlineFilter
 
-        matchesQuery && matchesLocation && matchesDeadline
-    }
 
+        !task.complete && matchesQuery && matchesLocation && matchesDeadline
+    // on the main task dashboard, we should order it by priority (descending)
+    } .sortedBy { it.priority }
 
     LaunchedEffect(Unit) {
         taskViewModel.fetchTasks() // Fetch tasks when screen loads
     }
+
     var menuExpanded by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
@@ -112,7 +136,11 @@ fun DashboardScreen(navController: NavController) {
                         )
                         DropdownMenuItem(
                             text = { Text("Logout") },
-                            onClick = { menuExpanded = false; Authorization.logout { navController.navigate(Screen.Login.route) } }
+                            onClick = { menuExpanded = false; Authorization.logout {
+                                navController.navigate(Screen.Login.route)
+                                // cancel any ongoing priority update jobs on logout
+                                jobScheduler.cancel(1)
+                            } }
                         )
                     }
 

@@ -1,6 +1,5 @@
 package com.example.location_aware_personal_organizer.ui.taskUpdate
 
-import android.util.Log
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
@@ -16,7 +15,7 @@ import com.example.location_aware_personal_organizer.data.LocationSuggestion
 import com.example.location_aware_personal_organizer.data.Task
 import com.example.location_aware_personal_organizer.services.TaskService
 import com.example.location_aware_personal_organizer.ui.taskCreation.LocationInputField
-import com.example.location_aware_personal_organizer.utils.fetchLocationSuggestions
+import com.example.location_aware_personal_organizer.utils.LocationHelper
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
@@ -30,8 +29,6 @@ import java.util.*
 fun TaskUpdateScreen(
     navController: NavController,
     taskId: String,
-    latitude: Float,
-    longitude: Float
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -142,7 +139,7 @@ fun TaskUpdateScreen(
                     },
                     onFetchSuggestions = { query ->
                         scope.launch {
-                            fetchLocationSuggestions(query, placesClient, latitude, longitude) {
+                            LocationHelper.fetchLocationSuggestions(query, placesClient) {
                                 locationSuggestions = it
                             }
                         }

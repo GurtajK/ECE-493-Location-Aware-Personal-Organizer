@@ -96,6 +96,7 @@ fun TaskItem(
                     style = MaterialTheme.typography.bodySmall
                 )
 
+                // Delete Confirmation Dialog
                 if (showDialog) {
                     AlertDialog(
                         onDismissRequest = { showDialog = false },
