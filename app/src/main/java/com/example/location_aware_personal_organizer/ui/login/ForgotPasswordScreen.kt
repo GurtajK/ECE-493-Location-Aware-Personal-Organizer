@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.location_aware_personal_organizer.services.Authorization
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
@@ -74,19 +75,12 @@ fun ForgotPasswordScreen(navController: NavController) {
                                     .await()
 
                                 if (!result.isEmpty) {
-                                    snackbarHostState.showSnackbar("This email exists!")
-                                    // Email is registered → call Cloud Function to send OTP
-//                                    Firebase.functions
-//                                        .getHttpsCallable("checkEmailAndSendOtp")
-//                                        .call(mapOf("email" to email))
-//                                        .addOnSuccessListener {
-//                                            navController.navigate(Screen.OtpVerification.withEmail(email))
-//                                        }
-//                                        .addOnFailureListener {
-//                                            scope.launch {
-//                                                snackbarHostState.showSnackbar(it.message ?: "Failed to send OTP.")
-//                                            }
-//                                        }
+                                    Authorization.requestPasswordReset(email) {
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar("Password Reset sent to $email")
+                                            navController.navigate("login")
+                                        }
+                                    }
                                 } else {
                                     snackbarHostState.showSnackbar("This email is not registered.")
                                 }
@@ -98,7 +92,7 @@ fun ForgotPasswordScreen(navController: NavController) {
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Send a One-Time Password")
+                Text("Send Password Reset Email")
             }
         }
     }
