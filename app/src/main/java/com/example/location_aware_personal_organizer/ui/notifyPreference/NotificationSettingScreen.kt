@@ -16,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -80,7 +81,10 @@ fun NotificationSettingsScreen(
             Text("Enable Time Notifications (before deadline)")
             Switch(
                 checked = timeEnabled,
-                onCheckedChange = { viewModel.toggleTimeNotification(it) }
+                onCheckedChange = { viewModel.toggleTimeNotification(it) },
+                modifier = Modifier.testTag("timeSwitch")
+
+
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -88,7 +92,9 @@ fun NotificationSettingsScreen(
             Text("Enable Prioritized Task Notifications")
             Switch(
                 checked = priorityEnabled,
-                onCheckedChange = { viewModel.togglePriorityNotification(it) }
+                onCheckedChange = { viewModel.togglePriorityNotification(it) },
+                modifier = Modifier.testTag("prioritySwitch")
+
             )
 
             Spacer(modifier = Modifier.height(32.dp))
