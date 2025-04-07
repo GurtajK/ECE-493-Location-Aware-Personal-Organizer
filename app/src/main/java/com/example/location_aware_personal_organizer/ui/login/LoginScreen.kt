@@ -84,12 +84,6 @@ fun LoginScreen(navController: NavController) {
                             isUsernameBlank = username.isBlank()
                         },
                         label = { Text(stringResource(R.string.username)) },
-                        isError = isUsernameBlank,
-                        supportingText = {
-                            if (isUsernameBlank) {
-                                Text("Username is required!")
-                            }
-                        },
                     )
                 }
                 FlowRow(modifier = Modifier.absolutePadding(bottom = 0.dp)) {
@@ -99,8 +93,7 @@ fun LoginScreen(navController: NavController) {
                             password = it
                             isPasswordBlank = password.isBlank()
                         },
-                        validate = { it.isNotBlank() },
-                        errorMessage = "Password is required!"
+                        validate = { true },    // this is for visual errors only which we don't want here
                     )
                 }
                 FlowRow(
