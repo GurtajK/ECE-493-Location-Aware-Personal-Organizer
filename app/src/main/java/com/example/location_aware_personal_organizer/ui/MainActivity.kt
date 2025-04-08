@@ -31,7 +31,6 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.location_aware_personal_organizer.ui.completedTasks.CompletedTasksScreen
 import com.example.location_aware_personal_organizer.ui.taskUpdate.TaskUpdateScreen
-import com.example.location_aware_personal_organizer.utils.TaskDeadlineReminder
 import com.example.location_aware_personal_organizer.utils.LocationHelper
 import com.example.location_aware_personal_organizer.services.PriorityService
 import com.google.android.gms.location.LocationServices
