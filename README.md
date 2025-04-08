@@ -18,7 +18,7 @@
 2. If you don't already have an account, register for one by clicking on "Don't have an account? Sign Up"
 3. Login to your account to be redirected to the task dashboard
 4. To create new tasks, click the create new task button at the bottom of the app
-5. When creating tasks, the "Task Location" field will be auto populated by location recommendations. Select the one you want when it appears.
+5. When creating tasks, as you type in the "Task Location" field, location suggestions will appear based on your input. Select the location suggestion you want when it appears.
 6. To edit a task from the dashboard, click anywhere on the Task except the checkbox or trash icon.
 7. To mark a task as completed, click on the checkbox on that task.
 8. To delete a task, click the trash icon on that task and click delete on the confirmation dialog.
