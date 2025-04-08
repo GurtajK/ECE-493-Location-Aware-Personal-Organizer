@@ -88,14 +88,4 @@ class RegisterScreenTests {
         composeTestRule.onNodeWithText("Password does not match").assertExists()
     }
 
-//    @Test
-//    fun registerScreen_navigationToLoginScreenOnClickHaveAccount() {
-//        val navController = androidx.navigation.testing.TestNavHostController(composeTestRule.activity)
-//        composeTestRule.activity.setContent {
-//            RegisterScreen(navController = navController)
-//        }
-//
-//        composeTestRule.onNodeWithText("Already have an account? Login").performClick()
-//
-//    }
 }
