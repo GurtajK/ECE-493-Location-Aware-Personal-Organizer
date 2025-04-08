@@ -1,12 +1,8 @@
 package com.example.location_aware_personal_organizer.services
 
-import android.app.job.JobInfo
 import android.app.job.JobParameters
-import android.app.job.JobScheduler
 import android.app.job.JobService
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import androidx.work.Configuration
 import com.example.location_aware_personal_organizer.data.Task
@@ -44,10 +40,6 @@ class PriorityService : JobService() {
         private const val DT_RATIO = TIME_SCALE / DISTANCE_SCALE   // multiply all distances by this
         private const val PRIORITY_SCALE = TIME_SCALE + DISTANCE_SCALE*DT_RATIO    // approximate higher end of the spectrum for priorities
         private const val INDIVIDUAL_THRESHOLD = PRIORITY_SCALE*0.05f   // threshold for sending notifications (one fourth of the priority scale)
-        // alternatively we might want to exponentially scale the priority value as location and time increases
-        // i.e. (e^0.2x - 1) or something, this way for smaller distances the priority will be more similar but as distance
-        // gets large it will have a more drastic effect on increasing priority
-        // We would need to play around with the threshold value if that was the case
 
         fun getInstance() : PriorityService {
             if (instance == null)
@@ -56,6 +48,7 @@ class PriorityService : JobService() {
             return instance!!
         }
 
+        // FR 68 Prioritization.Heuristic
         fun prioritizeTasks(tasks: List<Task>) {
             val currentTimestamp = Timestamp.now()
 
@@ -70,6 +63,7 @@ class PriorityService : JobService() {
             }
         }
 
+        // FR 68 Prioritization.Heuristic
         private fun haversineDistance(it: Task) : Double {
             // Calculate the Haversine distance for the km between the current location and the task location
             if (it.location == null) {
@@ -91,6 +85,8 @@ class PriorityService : JobService() {
             return distance
         }
 
+        // FR 55 Notify.Task
+        // FR 69 Prioritization.Location
         private suspend fun reprioritizeAndNotify(context: Context) {
             // if location is not initialized
             if (!LocationHelper.initialized) {
@@ -113,6 +109,7 @@ class PriorityService : JobService() {
         }
     }
 
+    // FR 69 Prioritization.Location
     override fun onStartJob(p0: JobParameters?): Boolean {
         getInstance()
         // begin background process updates

@@ -4,6 +4,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.GeoPoint
 
+// FR 37 Save.Task
 data class Task(
     @DocumentId val id: String? = null, // Firestore will generate the ID
     val title: String = "",

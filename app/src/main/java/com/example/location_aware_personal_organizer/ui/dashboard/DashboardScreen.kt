@@ -62,7 +62,8 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.ZoneId
 
-
+// FR 40 Button.TaskEdit
+// FR 59 Filter.Search
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(navController: NavController) {
@@ -76,7 +77,7 @@ fun DashboardScreen(navController: NavController) {
     var deadlineFilter by remember { mutableStateOf<LocalDate?>(null) }
 
     val jobScheduler = LocalContext.current.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
-    var existingJob = jobScheduler.getPendingJob(1)
+    val existingJob = jobScheduler.getPendingJob(1)
 
     if (existingJob == null) {
         // create a new job to run background prioritization every 30 minutes
@@ -86,7 +87,7 @@ fun DashboardScreen(navController: NavController) {
 
         // start the priority service job schedule
         jobScheduler.schedule(jobInfo.build())
-        Log.d("bg job", "schedule djob")
+        Log.d("bg job", "scheduled job")
     }
 
     val filteredTasks = tasks.filter { task ->
@@ -262,7 +263,7 @@ fun DashboardScreen(navController: NavController) {
 }
 
 
-
+// FR 32 Button.TaskCreate
 @Composable
 fun CreateNewTaskButton(navController: NavController, modifier: Modifier = Modifier) {
     Button(

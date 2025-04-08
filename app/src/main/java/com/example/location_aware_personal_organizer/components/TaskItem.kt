@@ -1,6 +1,5 @@
 package com.example.location_aware_personal_organizer.ui.components
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,6 +17,13 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+// FR 48 Button.TaskDelete
+// FR 49 Dialog.TaskDelete
+// FR 50 Cancel.TaskDelete
+// FR 51 Confirm.TaskDelete
+// FR 53 Success.TaskDelete
+// FR 54 Update.TaskComplete
+// FR 62 Complete.Task
 @Composable
 fun TaskItem(
     task: Task,

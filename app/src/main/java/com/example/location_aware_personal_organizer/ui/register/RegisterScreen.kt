@@ -31,6 +31,13 @@ import com.example.location_aware_personal_organizer.services.Authorization
 import com.example.location_aware_personal_organizer.ui.Screen
 import com.example.location_aware_personal_organizer.ui.theme.AppTypography
 
+// FR 2 Registration.Form
+// FR 3 Validate.Required
+// FR 4 Validate.Password
+// FR 5 Validate.Email
+// FR 7 Validate.Username
+// FR 8 Submit.Button
+// FR 11 Redirect.Registration
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RegisterScreen(navController: NavController) {
