@@ -19,4 +19,5 @@ sealed class Screen(val route: String) {
     object TaskUpdate : Screen("task_update") {
         fun withId(id: String) = "task_update?id=$id"
     }
+    object ForgotPassword : Screen("forgot_password")
 }

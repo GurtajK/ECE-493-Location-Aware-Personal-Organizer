@@ -180,6 +180,18 @@ class Authorization private constructor() {
             }
         }
 
+        fun requestPasswordReset(email: String, successCallback: () -> Unit) {
+            auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("PasswordReset", "Password reset email sent to $email")
+                    successCallback()
+                }
+                else {
+                    Log.w("PasswordReset", "Password reset email failed", task.exception)
+                }
+            }
+        }
+
         fun getUsername() : String {
             return auth.currentUser!!.displayName!!
         }

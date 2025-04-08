@@ -30,6 +30,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.location_aware_personal_organizer.ui.completedTasks.CompletedTasksScreen
+import com.example.location_aware_personal_organizer.ui.forgotpassword.ForgotPasswordScreen
 import com.example.location_aware_personal_organizer.ui.taskUpdate.TaskUpdateScreen
 import com.example.location_aware_personal_organizer.utils.LocationHelper
 import com.example.location_aware_personal_organizer.services.PriorityService
@@ -105,6 +106,10 @@ class MainActivity : ComponentActivity() {
                         ) { backStackEntry ->
                             val showSnackbar = backStackEntry.arguments?.getString("taskCompleted").toBoolean()
                             CompletedTasksScreen(navController, showSnackbar = showSnackbar)
+                        }
+
+                        composable(Screen.ForgotPassword.route) {
+                            ForgotPasswordScreen(navController)
                         }
                     }
                 }
