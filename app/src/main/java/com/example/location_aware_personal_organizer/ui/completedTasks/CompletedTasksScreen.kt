@@ -31,6 +31,9 @@ import com.example.location_aware_personal_organizer.ui.components.TaskItem
 import com.example.location_aware_personal_organizer.viewmodels.TaskViewModel
 import kotlinx.coroutines.launch
 
+// FR 64 Redirect.CompletedTask
+// FR 66 Undo.CompletedTask
+// FR 67 Redirect.UndoTask
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompletedTasksScreen(navController: NavController, showSnackbar: Boolean = false) {

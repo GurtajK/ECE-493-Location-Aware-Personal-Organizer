@@ -9,6 +9,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+// FR 39 Update.TaskCreate
+// FR 47 Update.TaskEdit
+// FR 54 Update.TaskDelete
+// FR 70 Prioritization.Update
 class TaskViewModel : ViewModel() {
     private val _tasks = MutableStateFlow<List<Task>>(emptyList())
     val tasks: StateFlow<List<Task>> = _tasks

@@ -3,7 +3,6 @@ package com.example.location_aware_personal_organizer.ui.dashboard
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.location_aware_personal_organizer.R
 import com.example.location_aware_personal_organizer.services.Authorization
 import com.example.location_aware_personal_organizer.ui.MainActivity
 import org.junit.Rule

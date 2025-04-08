@@ -1,6 +1,5 @@
 package com.example.location_aware_personal_organizer.services
 
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -19,16 +18,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 import kotlinx.coroutines.flow.first
 
 object TaskService {
     private val auth: FirebaseAuth = Firebase.auth
     private val db: FirebaseFirestore = Firebase.firestore
 
+    // FR 37 Save.Task
     suspend fun createTask(
         title: String,
         description: String,
@@ -73,10 +71,6 @@ object TaskService {
                     Log.d("TaskService", "Task successfully added: ${documentRef.id}")
 
                     if (timeEnabled) {
-//                        val notifyAtMillis = Calendar.getInstance().apply {
-//                            time = deadline
-//                            add(Calendar.MINUTE, -notify)
-//                        }.timeInMillis
                         val notifyAtMillis = Calendar.getInstance().apply {
                             time = deadline
                             set(Calendar.SECOND, 0)
@@ -107,6 +101,10 @@ object TaskService {
         }
     }
 
+    // FR 39 Update.TaskCreate
+    // FR 47 Update.TaskEdit
+    // FR 54 Update.TaskDelete
+    // FR 70 Prioritization.Update
     suspend fun getTasksForCurrentUser(): List<Task> {
         val user = auth.currentUser
         if (user == null) {
@@ -133,6 +131,7 @@ object TaskService {
         }
     }
 
+    // FR 52 Task.Deleted
     suspend fun deleteTask(taskId: String) {
         try {
             FirebaseFirestore.getInstance()
@@ -146,16 +145,19 @@ object TaskService {
         }
     }
 
+    // FR 62 Complete Task
     fun markTaskAsCompleted(taskId: String) {
         val taskRef = Firebase.firestore.collection("tasks").document(taskId)
         taskRef.update("complete", true)
     }
 
+    // FR 66 Undo.CompletedTask
     fun markTaskAsIncomplete(taskId: String) {
         val taskRef = Firebase.firestore.collection("tasks").document(taskId)
         taskRef.update("complete", false)
     }
 
+    // FR 45 Save.TaskEdit
     fun updateTask(
         taskId: String,
         title: String,
@@ -221,6 +223,7 @@ object TaskService {
         }
     }
 
+    // FR 47 Update.TaskEdit
     suspend fun getTaskById(taskId: String): Task? {
         return try {
             val document = FirebaseFirestore.getInstance()

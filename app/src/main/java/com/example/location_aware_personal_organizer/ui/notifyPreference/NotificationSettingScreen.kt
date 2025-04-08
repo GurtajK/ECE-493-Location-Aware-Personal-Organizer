@@ -22,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.location_aware_personal_organizer.services.NotificationHelper
 
+// FR 58 Notify.PreferencesChange
 @Composable
 fun NotificationSettingsScreen(
     navController: NavController,
