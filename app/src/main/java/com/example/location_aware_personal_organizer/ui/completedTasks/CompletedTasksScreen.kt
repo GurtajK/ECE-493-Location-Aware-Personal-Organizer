@@ -54,7 +54,17 @@ fun CompletedTasksScreen(navController: NavController, showSnackbar: Boolean = f
         topBar = {
             TopAppBar(title = { Text("Completed Tasks") })
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        bottomBar = {
+            Button(
+                onClick = { navController.popBackStack() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text("Back to Dashboard")
+            }
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -88,17 +98,6 @@ fun CompletedTasksScreen(navController: NavController, showSnackbar: Boolean = f
                         )
                     }
                 }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = { navController.popBackStack() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text("Back to Dashboard")
             }
         }
     }
