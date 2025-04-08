@@ -263,7 +263,7 @@ fun TaskCreationScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(bottom = 8.dp)
             ) {
-                Text(stringResource(R.string.create_task))
+                Text("Create Task")
             }
             Button(
                 onClick = {
