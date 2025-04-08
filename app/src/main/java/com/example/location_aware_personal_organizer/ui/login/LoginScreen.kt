@@ -38,6 +38,13 @@ import com.example.location_aware_personal_organizer.ui.Screen
 import com.example.location_aware_personal_organizer.ui.theme.AppTypography
 import kotlinx.coroutines.launch
 
+// FR 1 Request.Registration
+// FR 12 Default.Login
+// FR 13 Login.Form
+// FR 14 Validate.Required
+// FR 15 Login.Button
+// FR 17 Redirect.Login
+// FR 18 Forgot.Password
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun LoginScreen(navController: NavController) {

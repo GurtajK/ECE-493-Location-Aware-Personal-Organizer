@@ -21,6 +21,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.location_aware_personal_organizer.ui.theme.errorLight
 
+// FR 2 Registration Form
+// FR 3 Validate.Required
+// FR 13 Login.Form
+// FR 14 Validate.Required
 @Composable
 fun PasswordInput(
     password: String,
@@ -60,6 +64,7 @@ fun PasswordInput(
         isError = !valid
     )
 }
+
 
 @Preview(showBackground = true)
 @Composable

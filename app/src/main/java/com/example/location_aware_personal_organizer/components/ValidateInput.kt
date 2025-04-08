@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.location_aware_personal_organizer.ui.theme.errorLight
 
+// FR 5 Validate.Email
 @Composable
 fun ValidateInput(input: String, onInputChange: (String) -> Unit, label: String, validate: (String) -> Boolean, errorMessage: String) {
     var valid by rememberSaveable { mutableStateOf(true) }

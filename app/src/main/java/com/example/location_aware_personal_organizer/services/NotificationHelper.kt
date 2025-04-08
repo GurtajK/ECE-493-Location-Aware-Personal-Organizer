@@ -10,6 +10,9 @@ import androidx.core.app.NotificationCompat
 import com.example.location_aware_personal_organizer.R
 import com.example.location_aware_personal_organizer.ui.MainActivity
 
+// FR 55 Notify.Task
+// FR 56 Notify.Deadline
+// FR 57 Notify.Click
 class NotificationHelper(private val context: Context) {
 
     private val channelId = "local_notification_channel"

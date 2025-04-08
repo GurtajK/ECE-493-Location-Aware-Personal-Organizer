@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -24,6 +25,12 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
+// FR 41 Form.TaskEdit
+// FR 42 Cancel.TaskEdit
+// FR 43 Submit.TaskEdit
+// FR 44 Validate.TaskEdit
+// FR 46 Success.TaskEdit
+// FR 47 Update.TaskEdit
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskUpdateScreen(
@@ -49,7 +56,6 @@ fun TaskUpdateScreen(
         var showDatePicker by remember { mutableStateOf(false) }
         var showTimePicker by remember { mutableStateOf(false) }
         val snackbarHostState = remember { SnackbarHostState() }
-        val scope = rememberCoroutineScope()
         var selectedDate by remember { mutableStateOf<Long?>(taskDeadline?.time) }
         var selectedHour by remember { mutableIntStateOf(taskDeadline?.hours ?: 0) }
         var selectedMinute by remember { mutableIntStateOf(taskDeadline?.minutes ?: 0) }
@@ -88,6 +94,7 @@ fun TaskUpdateScreen(
                     label = { Text("Task Name") },
                     modifier = Modifier
                         .fillMaxWidth()
+                        .testTag("taskNameInput")
                         .padding(bottom = 8.dp),
                     isError = isTaskNameError,
                     supportingText = {
@@ -99,7 +106,7 @@ fun TaskUpdateScreen(
                     value = taskDescription,
                     onValueChange = { taskDescription = it },
                     label = { Text("Description") },
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp).testTag("descriptionInput")
                 )
 
                 OutlinedTextField(
@@ -115,7 +122,7 @@ fun TaskUpdateScreen(
                             contentDescription = null
                         )
                     },
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp).testTag("deadlineInput"),
                     interactionSource = interactionSource,
                     isError = isTaskDeadlineError,
                     supportingText = {

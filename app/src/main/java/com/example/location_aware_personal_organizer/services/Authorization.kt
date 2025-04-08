@@ -11,6 +11,7 @@ import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 
+
 class Authorization private constructor() {
     companion object {
         @Volatile
@@ -25,6 +26,8 @@ class Authorization private constructor() {
         private val auth: FirebaseAuth = Firebase.auth
         private val db: FirebaseFirestore by lazy { Firebase.firestore }
 
+        // FR 9 Send.Confirmation
+        // FR 10 Store.Registration
         fun register(
             username: String,
             email: String,
@@ -112,7 +115,7 @@ class Authorization private constructor() {
                                             Toast.LENGTH_SHORT,
                                         ).show()
                                     }
-                                };
+                                }
                         }
                     } else {
                         // username query failed
@@ -123,7 +126,6 @@ class Authorization private constructor() {
                         ).show()
                     }
                 }
-
             } else {
                 Toast.makeText(
                     context,
@@ -131,9 +133,9 @@ class Authorization private constructor() {
                     Toast.LENGTH_SHORT,
                 ).show()
             }
-
         }
 
+        // FR 16 Validate.Login
         fun login(username: String, password: String, successCallback: () -> Unit, context: Context) {
             db.collection("users").document(username).get()
                 .addOnSuccessListener { result ->
@@ -164,6 +166,7 @@ class Authorization private constructor() {
                 }
         }
 
+        // no FR we just wanted to memorize login
         fun logout(successCallback: () -> Unit) : Boolean {
             try {
                 auth.signOut()
@@ -181,10 +184,12 @@ class Authorization private constructor() {
             return auth.currentUser!!.displayName!!
         }
 
+        // FR 6 Verify.Domain
         fun isValidEmail(email: String) : Boolean {
             return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
         }
 
+        // FR 4 Validate.Password
         fun isValidPassword(password: String) : Boolean {
             return password.length >= 12 && password.any { it.isUpperCase() } && password.any { it.isLowerCase() } && password.any { !it.isLetterOrDigit() };
         }

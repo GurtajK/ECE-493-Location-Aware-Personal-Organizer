@@ -82,6 +82,9 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.6.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
     testImplementation("org.jetbrains.kotlin:kotlin-reflect:1.9.22")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+
     // firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
