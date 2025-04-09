@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.example.location_aware_personal_organizer.data.LocationSuggestion
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Task
@@ -134,10 +135,10 @@ class LocationHelper private constructor() {
 
                     if (activity != null) {
                         Log.d("bg location", "starting fused listener w act")
-                        fusedLocationProviderClient.lastLocation.addOnCompleteListener(activity, listener)
+                        fusedLocationProviderClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null).addOnCompleteListener(activity, listener)
                     } else {
                         Log.d("bg location", "starting fused listener w js")
-                        fusedLocationProviderClient.lastLocation.addOnCompleteListener(listener)
+                        fusedLocationProviderClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null).addOnCompleteListener(listener)
                     }
                 }
                 else
