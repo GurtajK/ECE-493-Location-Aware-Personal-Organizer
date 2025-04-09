@@ -1,6 +1,5 @@
 package com.example.location_aware_personal_organizer.ui
 
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,12 +24,8 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.navigation.navArgument
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import com.example.location_aware_personal_organizer.ui.completedTasks.CompletedTasksScreen
-import com.example.location_aware_personal_organizer.ui.forgotpassword.ForgotPasswordScreen
+import com.example.location_aware_personal_organizer.ui.login.ForgotPasswordScreen
 import com.example.location_aware_personal_organizer.ui.taskUpdate.TaskUpdateScreen
 import com.example.location_aware_personal_organizer.utils.LocationHelper
 import com.example.location_aware_personal_organizer.services.PriorityService
@@ -38,7 +33,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
     private val auth: FirebaseAuth = Firebase.auth
