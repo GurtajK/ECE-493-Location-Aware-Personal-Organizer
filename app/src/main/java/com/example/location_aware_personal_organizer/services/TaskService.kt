@@ -21,6 +21,7 @@ import kotlinx.coroutines.tasks.await
 import java.util.Calendar
 import java.util.Date
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 object TaskService {
     private val auth: FirebaseAuth = Firebase.auth
@@ -195,7 +196,11 @@ object TaskService {
             alarmManager.cancel(pendingIntent)
 
             // Reschedule notification if enabled
-            val notifyAtMillis = Calendar.getInstance().apply {
+            val timeEnabled = runBlocking {
+                NotificationPreferencesManager.getTimeNotificationState(context).first()
+            }
+
+            if (timeEnabled) {val notifyAtMillis = Calendar.getInstance().apply {
                 time = deadline
                 set(Calendar.SECOND, 0)
                 set(Calendar.MILLISECOND, 0)
@@ -214,6 +219,8 @@ object TaskService {
                 } catch (e: Exception) {
                     Log.e("TaskService", "Error scheduling notification", e)
                 }
+            }
+
             }
 
             onSuccess()
