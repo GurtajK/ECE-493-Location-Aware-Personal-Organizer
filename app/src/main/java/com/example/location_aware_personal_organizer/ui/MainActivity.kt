@@ -23,6 +23,9 @@ import com.google.android.libraries.places.api.Places
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.navArgument
 import com.example.location_aware_personal_organizer.ui.completedTasks.CompletedTasksScreen
 import com.example.location_aware_personal_organizer.ui.login.ForgotPasswordScreen
@@ -54,9 +57,24 @@ class MainActivity : ComponentActivity() {
         }
 
         LocationHelper.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        LocationHelper.updateCurrentLocation(this)
 
         setContent {
+            val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+                if (permissions.entries.all { it.value }) {
+                    Toast.makeText(applicationContext, "Permission Granted", Toast.LENGTH_SHORT).show()
+                    LocationHelper.updateCurrentLocation(this)
+                } else {
+                    Toast.makeText(applicationContext, "Permission Denied", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            LaunchedEffect(Unit) {
+                if (!LocationHelper.checkPermissions(this@MainActivity))
+                    permissionLauncher.launch(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION))
+                else
+                    LocationHelper.updateCurrentLocation(this@MainActivity)
+            }
+
             AppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),

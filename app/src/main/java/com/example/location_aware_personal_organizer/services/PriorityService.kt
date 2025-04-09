@@ -3,6 +3,7 @@ package com.example.location_aware_personal_organizer.services
 import android.app.job.JobParameters
 import android.app.job.JobService
 import android.content.Context
+import android.location.Location
 import android.util.Log
 import androidx.work.Configuration
 import com.example.location_aware_personal_organizer.data.Task
@@ -50,6 +51,11 @@ class PriorityService : JobService() {
 
         // FR 68 Prioritization.Heuristic
         fun prioritizeTasks(tasks: List<Task>) {
+            if (!LocationHelper.initialized) {
+                Log.e("ProxiPlan Location", "LOCATION IS NOT SET")
+                return
+            }
+
             val currentTimestamp = Timestamp.now()
 
             for (task in tasks) {
@@ -89,9 +95,6 @@ class PriorityService : JobService() {
         // FR 69 Prioritization.Location
         private suspend fun reprioritizeAndNotify(context: Context) {
             // if location is not initialized
-            if (!LocationHelper.initialized) {
-                LocationHelper.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
-            }
             var tasks = TaskService.getTasksForCurrentUser()
 
             // always get an updated location
