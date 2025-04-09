@@ -3,6 +3,7 @@ package com.example.location_aware_personal_organizer.ui.taskUpdate
 import android.content.Context
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.location_aware_personal_organizer.services.TaskService
 import com.example.location_aware_personal_organizer.ui.MainActivity
@@ -13,6 +14,12 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.Calendar
+import com.example.location_aware_personal_organizer.data.Task
+import java.util.UUID
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
+import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 class TaskUpdateScreenTest {
@@ -20,6 +27,28 @@ class TaskUpdateScreenTest {
     @get:Rule
     val composeRule = createAndroidComposeRule<MainActivity>()
 
+    private lateinit var createdTaskTitle: String
+
+    @Before
+    fun setupTask() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val now = Calendar.getInstance().apply { add(Calendar.HOUR, 1) }.time
+        createdTaskTitle = "UITestTask-${UUID.randomUUID()}"
+
+        runBlocking {
+            TaskService.createTask(
+                title = createdTaskTitle,
+                description = "Task created for UI test",
+                deadline = now,
+                location = GeoPoint(0.0, 0.0),
+                locationName = "Test Location",
+                notify = 10,
+                context = context,
+                onSuccess = {},
+                onFailure = { throw it }
+            )
+        }
+    }
 
     @Test
     fun clickFirstTaskNavigatesToUpdateScreen() {
