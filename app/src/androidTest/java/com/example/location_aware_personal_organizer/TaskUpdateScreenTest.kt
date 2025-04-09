@@ -42,7 +42,7 @@ class TaskUpdateScreenTest {
                 deadline = now,
                 location = GeoPoint(0.0, 0.0),
                 locationName = "Test Location",
-                notify = 10,
+                notify = 5,
                 context = context,
                 onSuccess = {},
                 onFailure = { throw it }
