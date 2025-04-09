@@ -1,6 +1,5 @@
-package com.example.location_aware_personal_organizer.ui.forgotpassword
+package com.example.location_aware_personal_organizer.ui.login
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -14,6 +13,9 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
+// FR 19 Email.Field
+// FR 20 Validate.Email
+// FR 21 Email.Button
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForgotPasswordScreen(navController: NavController) {
@@ -66,7 +68,6 @@ fun ForgotPasswordScreen(navController: NavController) {
                             snackbarHostState.showSnackbar( "Please fill in all required fields")
                         }
                     } else {
-
                         scope.launch {
                             try {
                                 val result = db.collection("users")

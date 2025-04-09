@@ -2,7 +2,10 @@ package com.example.location_aware_personal_organizer.ui.notifyPreference
 
 import android.Manifest
 import android.app.Application
+import android.app.job.JobScheduler
+import android.app.job.JobService.JOB_SCHEDULER_SERVICE
 import android.content.pm.PackageManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,6 +54,10 @@ class NotificationSettingsViewModel(application: Application) : AndroidViewModel
     }
 
     fun togglePriorityNotification(enabled: Boolean) {
+        if (!enabled) {
+            val jobScheduler = context.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
+            jobScheduler.cancel(1)
+        }
         _priorityNotificationEnabled.value = enabled
         viewModelScope.launch {
             NotificationPreferencesManager.setPriorityNotificationState(context, enabled)

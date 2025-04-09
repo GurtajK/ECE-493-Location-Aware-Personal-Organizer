@@ -56,6 +56,7 @@ import com.example.location_aware_personal_organizer.services.Authorization
 import com.example.location_aware_personal_organizer.services.PriorityService
 import com.example.location_aware_personal_organizer.ui.Screen
 import com.example.location_aware_personal_organizer.ui.components.TaskItem
+import com.example.location_aware_personal_organizer.ui.notifyPreference.NotificationSettingsViewModel
 import com.example.location_aware_personal_organizer.ui.theme.AppTypography
 import com.example.location_aware_personal_organizer.viewmodels.TaskViewModel
 import kotlinx.coroutines.launch
@@ -79,7 +80,10 @@ fun DashboardScreen(navController: NavController) {
     val jobScheduler = LocalContext.current.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
     val existingJob = jobScheduler.getPendingJob(1)
 
-    if (existingJob == null) {
+    val notificationViewModel: NotificationSettingsViewModel = viewModel()
+    val priorityNotificationsEnabled = notificationViewModel.priorityNotificationEnabled.collectAsStateWithLifecycle()
+
+    if (existingJob == null && priorityNotificationsEnabled.value) {
         // create a new job to run background prioritization every 30 minutes
         val jobInfo = JobInfo
             .Builder(1, ComponentName(LocalContext.current, PriorityService::class.java))

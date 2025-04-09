@@ -180,6 +180,7 @@ class Authorization private constructor() {
             }
         }
 
+        // FR 22 Reset.Email
         fun requestPasswordReset(email: String, successCallback: () -> Unit) {
             auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
                 if (task.isSuccessful) {

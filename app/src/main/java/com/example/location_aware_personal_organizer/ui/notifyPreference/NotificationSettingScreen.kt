@@ -95,7 +95,6 @@ fun NotificationSettingsScreen(
                 checked = priorityEnabled,
                 onCheckedChange = { viewModel.togglePriorityNotification(it) },
                 modifier = Modifier.testTag("prioritySwitch")
-
             )
 
             Spacer(modifier = Modifier.height(32.dp))
