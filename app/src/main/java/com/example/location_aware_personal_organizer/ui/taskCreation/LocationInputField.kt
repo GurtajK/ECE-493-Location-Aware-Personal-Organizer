@@ -12,7 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.location_aware_personal_organizer.data.LocationSuggestion
 
-// FR 33 Task.Create (for location field suggestions)
+// FR 24 Task.Create (for location field suggestions)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationInputField(

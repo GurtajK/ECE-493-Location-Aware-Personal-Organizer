@@ -27,7 +27,7 @@ object TaskService {
     private val auth: FirebaseAuth = Firebase.auth
     private val db: FirebaseFirestore = Firebase.firestore
 
-    // FR 37 Save.Task
+    // FR 28 Save.Task
     suspend fun createTask(
         title: String,
         description: String,
@@ -102,10 +102,10 @@ object TaskService {
         }
     }
 
-    // FR 39 Update.TaskCreate
-    // FR 47 Update.TaskEdit
-    // FR 54 Update.TaskDelete
-    // FR 70 Prioritization.Update
+    // FR 30 Update.TaskCreate
+    // FR 38 Update.TaskEdit
+    // FR 45 Update.TaskDelete
+    // FR 60 Prioritization.Update
     suspend fun getTasksForCurrentUser(): List<Task> {
         val user = auth.currentUser
         if (user == null) {
@@ -132,7 +132,7 @@ object TaskService {
         }
     }
 
-    // FR 52 Task.Deleted
+    // FR 43 Task.Deleted
     suspend fun deleteTask(taskId: String) {
         try {
             FirebaseFirestore.getInstance()
@@ -146,19 +146,19 @@ object TaskService {
         }
     }
 
-    // FR 62 Complete Task
+    // FR 53 Complete Task
     fun markTaskAsCompleted(taskId: String) {
         val taskRef = Firebase.firestore.collection("tasks").document(taskId)
         taskRef.update("complete", true)
     }
 
-    // FR 66 Undo.CompletedTask
+    // FR 56 Undo.CompletedTask
     fun markTaskAsIncomplete(taskId: String) {
         val taskRef = Firebase.firestore.collection("tasks").document(taskId)
         taskRef.update("complete", false)
     }
 
-    // FR 45 Save.TaskEdit
+    // FR 36 Save.TaskEdit
     fun updateTask(
         taskId: String,
         title: String,
@@ -230,7 +230,7 @@ object TaskService {
         }
     }
 
-    // FR 47 Update.TaskEdit
+    // FR 38 Update.TaskEdit
     suspend fun getTaskById(taskId: String): Task? {
         return try {
             val document = FirebaseFirestore.getInstance()

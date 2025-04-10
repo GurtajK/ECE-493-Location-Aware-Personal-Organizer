@@ -27,9 +27,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.properties.Delegates
 
-// FR 33 Task.Create
-// FR 68 Prioritization.Heuristic
-// FR 69 Prioritization.Location
+// FR 24 Task.Create
+// FR 58 Prioritization.Heuristic
+// FR 59 Prioritization.Location
 class LocationHelper private constructor() {
     companion object {
         @Volatile

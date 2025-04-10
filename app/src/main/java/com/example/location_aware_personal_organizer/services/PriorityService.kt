@@ -49,7 +49,7 @@ class PriorityService : JobService() {
             return instance!!
         }
 
-        // FR 68 Prioritization.Heuristic
+        // FR 58 Prioritization.Heuristic
         fun prioritizeTasks(tasks: List<Task>) {
             if (!LocationHelper.initialized) {
                 Log.e("ProxiPlan Location", "LOCATION IS NOT SET")
@@ -69,7 +69,7 @@ class PriorityService : JobService() {
             }
         }
 
-        // FR 68 Prioritization.Heuristic
+        // FR 58 Prioritization.Heuristic
         private fun haversineDistance(it: Task) : Double {
             // Calculate the Haversine distance for the km between the current location and the task location
             if (it.location == null) {
@@ -91,8 +91,8 @@ class PriorityService : JobService() {
             return distance
         }
 
-        // FR 55 Notify.Task
-        // FR 69 Prioritization.Location
+        // FR 46 Notify.Task
+        // FR 59 Prioritization.Location
         private suspend fun reprioritizeAndNotify(context: Context) {
             // if location is not initialized
             var tasks = TaskService.getTasksForCurrentUser()
@@ -115,7 +115,7 @@ class PriorityService : JobService() {
         }
     }
 
-    // FR 69 Prioritization.Location
+    // FR 59 Prioritization.Location
     override fun onStartJob(p0: JobParameters?): Boolean {
         getInstance()
         // begin background process updates

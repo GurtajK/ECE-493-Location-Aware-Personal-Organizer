@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.location_aware_personal_organizer.databinding.FragmentNotificationsBinding
 
-// FR 55-58 Notifications
+// FR 46-49 Notifications
 class NotificationsFragment : Fragment() {
 
     private var _binding: FragmentNotificationsBinding? = null

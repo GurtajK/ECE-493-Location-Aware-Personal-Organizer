@@ -4,10 +4,10 @@ package com.example.location_aware_personal_organizer.ui
 // FR 13 Login.Form
 // FR 17 Redirect.Login
 // FR 18 Forgot.Password
-// FR 33 Task.Create
-// FR 41 Form.TaskEdit
-// FR 58 Notify.PreferencesChange
-// FR 64 Redirect.CompletedTask
+// FR 24 Task.Create
+// FR 32 Form.TaskEdit
+// FR 49 Notify.PreferencesChange
+// FR 55 Redirect.CompletedTask
 sealed class Screen(val route: String) {
     object Login : Screen("login")
     object Register : Screen("register")
