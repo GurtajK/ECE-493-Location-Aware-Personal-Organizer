@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 
 val Context.dataStore by preferencesDataStore(name = "notification_settings")
 
-// FR 58 Notify.PreferencesChange
+// FR 49 Notify.PreferencesChange
 object NotificationPreferencesManager {
     private val TIME_NOTIF_KEY = booleanPreferencesKey("time_notifications")
     private val PRIORITY_NOTIF_KEY = booleanPreferencesKey("priority_notifications")

@@ -17,13 +17,13 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-// FR 48 Button.TaskDelete
-// FR 49 Dialog.TaskDelete
-// FR 50 Cancel.TaskDelete
-// FR 51 Confirm.TaskDelete
-// FR 53 Success.TaskDelete
-// FR 54 Update.TaskComplete
-// FR 62 Complete.Task
+// FR 39 Button.TaskDelete
+// FR 40 Dialog.TaskDelete
+// FR 41 Cancel.TaskDelete
+// FR 42 Confirm.TaskDelete
+// FR 44 Success.TaskDelete
+// FR 45 Update.TaskDelete
+// FR 53 Complete.Task
 @Composable
 fun TaskItem(
     task: Task,

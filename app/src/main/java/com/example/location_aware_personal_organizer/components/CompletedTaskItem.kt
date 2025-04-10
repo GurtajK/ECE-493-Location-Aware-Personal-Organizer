@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-// FR 63 Move.Task
+// FR 54 Move.Task
 @Composable
 fun CompletedTaskItem(
     task: Task,
