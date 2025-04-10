@@ -3,13 +3,12 @@
 **Setup Instructions:**
 
 1. Clone tthe main branch of this repository.
-2. Download the gradle.properties from the Final Submissions folder in Google Drive.
+2. Download two files from the Final Submissions folder in Google Drive: gradle.properties and google-services.json.
 3. Replace the gradle.properties file in the root of this repository with the downloaded one.
-4. Open the project (root of repository) with Android Studio.
-5. Run the application:
-
+4. Move or copy google-services.json to ./app in the root of this repository.
+5. Open the project (root of repository) with Android Studio.
+6. Run the application:
     a) Using an emulator - Install an android emulator with a minimum sdk of 26.0
-
     b) Using a physical device - Connect via USB and enable USB Debugging on the device=
 
 **User Guide:**
