@@ -9,7 +9,7 @@
 5. Open the project (root of repository) with Android Studio.
 6. Run the application:
     a) Using an emulator - Install an android emulator with a minimum sdk of 26.0
-    b) Using a physical device - Connect via USB and enable USB Debugging on the device=
+    b) Using a physical device - Connect via USB and enable USB Debugging on the device
 
 **User Guide:**
 
