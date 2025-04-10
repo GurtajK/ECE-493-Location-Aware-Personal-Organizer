@@ -2,6 +2,7 @@ package com.example.location_aware_personal_organizer.ui.login
 
 import android.app.job.JobScheduler
 import android.app.job.JobService.JOB_SCHEDULER_SERVICE
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -60,6 +61,7 @@ fun LoginScreen(navController: NavController) {
     // cancel any ongoing priority update jobs on logout
     val jobScheduler = LocalContext.current.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
     jobScheduler.cancel(1)
+    Log.d("bg job", "cancelled job")
 
     val context = LocalContext.current
 
