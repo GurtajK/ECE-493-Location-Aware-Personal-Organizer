@@ -14,9 +14,11 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.example.location_aware_personal_organizer.data.LocationSuggestion
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LastLocationRequest
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.Task
 import com.google.android.libraries.places.api.model.CircularBounds
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
@@ -117,19 +119,23 @@ class LocationHelper private constructor() {
                         return
                     }
 
+                    var cts : CancellationTokenSource? = null
                     val listener = { task : Task<Location> ->
-                        Log.d("bg location", "in listener")
                         Log.d("bg location", if (task.isSuccessful) "task success" else "task fail")
-                        val location: Location? = task.result
-                        if (location == null) {
-                            Log.d("bg location", "null location")
-                            Toast.makeText(context, "Null Received", Toast.LENGTH_SHORT).show()
-                        }
-                        else {
-                            Log.d("bg location", "get success")
-                            //Toast.makeText(context, "Get Success", Toast.LENGTH_SHORT).show()
-                            setLocation(location.latitude, location.longitude)
-                            successCallback()
+                        if (task.isSuccessful) {
+                            val location: Location? = task.result
+                            if (location == null) {
+                                Log.d("bg location", "null location")
+                                Toast.makeText(context, "Null Received", Toast.LENGTH_SHORT).show()
+                            }
+                            else {
+                                if (cts != null)
+                                    cts!!.cancel()
+                                Log.d("bg location", "get success")
+                                //Toast.makeText(context, "Get Success", Toast.LENGTH_SHORT).show()
+                                setLocation(location.latitude, location.longitude)
+                                successCallback()
+                            }
                         }
                     }
 
@@ -138,7 +144,9 @@ class LocationHelper private constructor() {
                         fusedLocationProviderClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null).addOnCompleteListener(activity, listener)
                     } else {
                         Log.d("bg location", "starting fused listener w js")
-                        fusedLocationProviderClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null).addOnCompleteListener(listener)
+                        cts = CancellationTokenSource()
+                        fusedLocationProviderClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cts.token).addOnCompleteListener(listener)
+                        fusedLocationProviderClient.lastLocation.addOnCompleteListener(listener)
                     }
                 }
                 else
