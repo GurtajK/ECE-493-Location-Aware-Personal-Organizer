@@ -120,6 +120,7 @@ class PriorityService : JobService() {
         getInstance()
         // begin background process updates
         val context = this
+        LocationHelper.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         Log.d("bg job", "background reprioritize started")
         CoroutineScope(Job() + Dispatchers.Main).launch {
             reprioritizeAndNotify(context)

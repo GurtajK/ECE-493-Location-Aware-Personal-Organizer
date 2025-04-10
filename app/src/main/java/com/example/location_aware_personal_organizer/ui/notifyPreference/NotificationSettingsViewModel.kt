@@ -5,6 +5,7 @@ import android.app.Application
 import android.app.job.JobScheduler
 import android.app.job.JobService.JOB_SCHEDULER_SERVICE
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -57,6 +58,7 @@ class NotificationSettingsViewModel(application: Application) : AndroidViewModel
         if (!enabled) {
             val jobScheduler = context.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
             jobScheduler.cancel(1)
+            Log.d("bg job", "cancelled job")
         }
         _priorityNotificationEnabled.value = enabled
         viewModelScope.launch {

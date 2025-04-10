@@ -87,7 +87,7 @@ fun DashboardScreen(navController: NavController) {
         // create a new job to run background prioritization every 30 minutes
         val jobInfo = JobInfo
             .Builder(1, ComponentName(LocalContext.current, PriorityService::class.java))
-            .setPeriodic(15 * 60 * 1000)
+            .setPeriodic(30 * 60 * 1000)
 
         // start the priority service job schedule
         jobScheduler.schedule(jobInfo.build())
@@ -145,6 +145,7 @@ fun DashboardScreen(navController: NavController) {
                                 navController.navigate(Screen.Login.route)
                                 // cancel any ongoing priority update jobs on logout
                                 jobScheduler.cancel(1)
+                                Log.d("bg job", "cancelled job")
                             } }
                         )
                     }
